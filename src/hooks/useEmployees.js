@@ -4,11 +4,11 @@ import { supabase } from '../config/supabaseClient';
 export const useEmployees = () => {
   const [employees, setEmployees] = useState([
     // Fallback data - replace with Supabase data
-    { id: 1, name: 'John Doe', sss: 1250, pagibig: 500, philhealth: 300, eeShare: 8500, erShare: 12750 },
-    { id: 2, name: 'Jane Smith', sss: 1100, pagibig: 450, philhealth: 280, eeShare: 7200, erShare: 10800 },
-    { id: 3, name: 'Mike Johnson', sss: 1000, pagibig: 400, philhealth: 250, eeShare: 6500, erShare: 9750 },
-    { id: 4, name: 'Sarah Williams', sss: 1050, pagibig: 425, philhealth: 265, eeShare: 7000, erShare: 10500 },
-    { id: 5, name: 'Tom Brown', sss: 1300, pagibig: 520, philhealth: 310, eeShare: 8800, erShare: 13200 },
+    { id: 1, name: 'John Doe', sss: 1250, pagibig: 500, philhealth: 300, eeshare: 8500, ershare: 12750 },
+    { id: 2, name: 'Jane Smith', sss: 1100, pagibig: 450, philhealth: 280, eeshare: 7200, ershare: 10800 },
+    { id: 3, name: 'Mike Johnson', sss: 1000, pagibig: 400, philhealth: 250, eeshare: 6500, ershare: 9750 },
+    { id: 4, name: 'Sarah Williams', sss: 1050, pagibig: 425, philhealth: 265, eeshare: 7000, ershare: 10500 },
+    { id: 5, name: 'Tom Brown', sss: 1300, pagibig: 520, philhealth: 310, eeshare: 8800, ershare: 13200 },
   ]);
   const [loading, setLoading] = useState(true);
 
@@ -38,14 +38,57 @@ export const useEmployees = () => {
     }
   };
 
-  const addEmployee = async (employee) => {
+  const addEmployee = async (employeeData) => {
     try {
+      let photoUrl = null;
+      
+      // Upload photo if provided
+      if (employeeData.photoFile) {
+        const file = employeeData.photoFile;
+        const fileName = `${Date.now()}_${file.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from('employee-photos')
+          .upload(`public/${fileName}`, file);
+
+        if (uploadError) {
+          console.warn('Photo upload failed:', uploadError);
+        } else {
+          const { data } = supabase.storage
+            .from('employee-photos')
+            .getPublicUrl(`public/${fileName}`);
+          photoUrl = data.publicUrl;
+        }
+      }
+
+      // Prepare employee data (remove file from data object)
+      const { photoFile, ...employeeDataWithoutFile } = employeeData;
+      const newEmployee = {
+        name: employeeData.name,
+        designation: employeeData.designation || '',
+        sss: parseFloat(employeeData.sss) || 0,
+        pagibig: parseFloat(employeeData.pagibig) || 0,
+        philhealth: parseFloat(employeeData.philhealth) || 0,
+        eeshare: parseFloat(employeeData.eeShare) || 0,
+        ershare: parseFloat(employeeData.erShare) || 0
+      };
+
+      console.log('Adding employee:', newEmployee);
+
       const { data, error } = await supabase
         .from('employees')
-        .insert([employee])
+        .insert([newEmployee])
         .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
+
+      if (!data || data.length === 0) {
+        throw new Error('No data returned from insert');
+      }
+
+      console.log('Employee added successfully:', data[0]);
       setEmployees([...employees, data[0]]);
       return { success: true, data: data[0] };
     } catch (err) {
@@ -56,13 +99,56 @@ export const useEmployees = () => {
 
   const updateEmployee = async (id, updates) => {
     try {
+      let photoUrl = updates.photoUrl;
+      
+      // Upload new photo if provided
+      if (updates.photoFile) {
+        const file = updates.photoFile;
+        const fileName = `${Date.now()}_${file.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from('employee-photos')
+          .upload(`public/${fileName}`, file);
+
+        if (uploadError) {
+          console.warn('Photo upload failed:', uploadError);
+        } else {
+          const { data } = supabase.storage
+            .from('employee-photos')
+            .getPublicUrl(`public/${fileName}`);
+          photoUrl = data.publicUrl;
+        }
+      }
+
+      // Prepare update data (remove file from data object)
+      const { photoFile, ...updateDataWithoutFile } = updates;
+      const updateData = {
+        name: updates.name,
+        designation: updates.designation || '',
+        sss: parseFloat(updates.sss) || 0,
+        pagibig: parseFloat(updates.pagibig) || 0,
+        philhealth: parseFloat(updates.philhealth) || 0,
+        eeshare: parseFloat(updates.eeShare) || 0,
+        ershare: parseFloat(updates.erShare) || 0
+      };
+
+      console.log('Updating employee:', updateData);
+
       const { data, error } = await supabase
         .from('employees')
-        .update(updates)
+        .update(updateData)
         .eq('id', id)
         .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
+
+      if (!data || data.length === 0) {
+        throw new Error('No data returned from update');
+      }
+
+      console.log('Employee updated successfully:', data[0]);
       setEmployees(employees.map(emp => emp.id === id ? data[0] : emp));
       return { success: true, data: data[0] };
     } catch (err) {

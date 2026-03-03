@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import jsPDF from 'jspdf';
 import { useEmployees } from '../hooks/useEmployees';
+import EmployeeCard from './EmployeeCard';
 
 // Sub-component for the Status Cards
 const StatusCard = ({ title, value }) => (
@@ -135,6 +136,7 @@ const EmployeeTable = ({ employees, loading }) => {
 
 export default function Dashboard() {
   const { employees, loading } = useEmployees();
+  const [viewMode, setViewMode] = useState('table'); // 'table' or 'grid'
 
   // Calculate totals from employees
   const calculateTotals = () => {
@@ -165,11 +167,56 @@ export default function Dashboard() {
 
       {/* Employee List */}
       <section className="bg-white p-4 md:p-8 rounded-lg shadow-md">
-        <div className="mb-6">
-          <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-1">Employee Directory</h3>
-          <p className="text-gray-600 text-xs md:text-sm">Recently active employees</p>
+        <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-1">Employee Directory</h3>
+            <p className="text-gray-600 text-xs md:text-sm">Recently active employees</p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setViewMode('table')}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                viewMode === 'table'
+                  ? 'bg-[#10b981] text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              📊 Table
+            </button>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                viewMode === 'grid'
+                  ? 'bg-[#10b981] text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              🎴 Cards
+            </button>
+          </div>
         </div>
-        <EmployeeTable employees={employees} loading={loading} />
+
+        {/* Table View */}
+        {viewMode === 'table' && <EmployeeTable employees={employees} loading={loading} />}
+
+        {/* Grid View */}
+        {viewMode === 'grid' && (
+          <>
+            {loading ? (
+              <div className="text-center py-8 text-gray-500">Loading employee data...</div>
+            ) : !employees || employees.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">No employee data available</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {employees.map(emp => (
+                  <div key={emp.id}>
+                    <EmployeeCard employee={emp} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
       </section>
     </>
   );
