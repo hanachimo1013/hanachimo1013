@@ -103,7 +103,6 @@ const EmployeeTable = ({ employees, loading }) => {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b-2 border-[#e6a891] bg-gray-100 dark:bg-gray-800 dark:border-gray-700">
-            <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">ID</th>
             <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Name</th>
             <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">EE Share (Employee)</th>
             <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">ER Share (Employer)</th>
@@ -114,7 +113,6 @@ const EmployeeTable = ({ employees, loading }) => {
         <tbody>
           {employees.map((emp) => (
             <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors dark:border-gray-700 dark:hover:bg-gray-800/60">
-              <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{emp.id}</td>
               <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-100">{emp.name}</td>
               <td className="px-4 py-3 font-semibold text-[#10b981]">{formatPeso(getEeShare(emp))}</td>
               <td className="px-4 py-3 font-semibold text-[#3b82f6]">{formatPeso(getErShare(emp))}</td>
