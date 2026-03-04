@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import adminAvatar from '../assets/admin-avatar.png';
 
 const SidebarBtn = ({ to, text, icon, onClick }) => {
   const location = useLocation();
@@ -71,10 +72,14 @@ export default function Layout({ children }) {
             sidebarOpen ? 'translate-y-0 opacity-100' : '-translate-y-full md:translate-y-0 opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto'
           }`}
         >
-          <div className="w-24 h-24 bg-gradient-to-br from-[#bc7676] to-[#a85f66] rounded-full mb-4 shadow-lg flex items-center justify-center flex-shrink-0">
-            <span className="text-3xl font-bold text-white">A</span>
+          <div className="w-24 h-24 rounded-full mb-4 shadow-lg overflow-hidden flex items-center justify-center flex-shrink-0 border-2 border-white/30">
+            <img
+              src={adminAvatar}
+              alt="Admin avatar"
+              className="w-full h-full object-cover"
+            />
           </div>
-          <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">Admin User</h2>
+          <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">はなちも-管理者</h2>
           <p className="text-xs text-gray-600 mb-8 dark:text-gray-300">System Administrator</p>
           
           <div className="w-full flex-1">
@@ -89,7 +94,7 @@ export default function Layout({ children }) {
           </div>
 
           <div className="mt-6 w-full rounded-lg border border-[#bc7676]/40 bg-white/70 p-3 text-center text-[10px] leading-relaxed text-gray-700 shadow-sm dark:border-gray-600 dark:bg-gray-900/60 dark:text-gray-300">
-            Built by you using React, Vite, Tailwind CSS, and Supabase.
+            Built by hanachimo using React, Vite, Tailwind CSS, and Supabase.
           </div>
         </aside>
 
