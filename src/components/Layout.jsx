@@ -87,6 +87,10 @@ export default function Layout({ children }) {
             Logout
           </button>
           </div>
+
+          <div className="mt-6 w-full rounded-lg border border-[#bc7676]/40 bg-white/70 p-3 text-center text-[10px] leading-relaxed text-gray-700 shadow-sm dark:border-gray-600 dark:bg-gray-900/60 dark:text-gray-300">
+            Built by you using React, Vite, Tailwind CSS, and Supabase.
+          </div>
         </aside>
 
         {/* Main Content Area */}
