@@ -3,6 +3,7 @@ import jsPDF from 'jspdf';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useEmployees } from '../hooks/useEmployees';
 import { formatPeso, getEeShare, getErShare } from '../utils/formatters';
+import LoadingOverlay from './LoadingOverlay';
 
 export default function Reports() {
   const [selectedReport, setSelectedReport] = useState(null);
@@ -220,10 +221,13 @@ export default function Reports() {
 
   if (loading) {
     return (
-      <div className="bg-white p-8 rounded-lg shadow-md flex flex-col items-center justify-center h-96">
-        <div className="text-center">
-          <p className="text-gray-600 text-lg">Loading reports...</p>
+      <div className="bg-white p-8 rounded-lg shadow-md flex flex-col relative dark:bg-gray-900 dark:text-gray-100">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2 dark:text-gray-100">Reports</h2>
+          <p className="text-gray-600 dark:text-gray-300">Generate and view insurance and salary distribution reports</p>
         </div>
+        <div className="h-64 rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800" />
+        <LoadingOverlay message="Loading reports..." />
       </div>
     );
   }

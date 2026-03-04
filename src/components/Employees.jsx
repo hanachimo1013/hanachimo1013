@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useEmployees } from '../hooks/useEmployees';
 import EmployeeCard from './EmployeeCard';
 import { formatPeso, getEeShare, getErShare, getPhotoUrl } from '../utils/formatters';
+import LoadingOverlay from './LoadingOverlay';
 
 const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = false }) => {
   const [formData, setFormData] = useState(
@@ -427,7 +428,8 @@ export default function Employees() {
       )}
 
       {viewMode === 'table' && (
-        <div className="overflow-y-auto flex-1">
+        <div className="overflow-y-auto flex-1 relative">
+          {loading && <LoadingOverlay message="Loading employees..." />}
           <EmployeeTable
             employees={employees}
             loading={loading}
@@ -438,7 +440,8 @@ export default function Employees() {
       )}
 
       {viewMode === 'grid' && (
-        <div className="overflow-y-auto flex-1">
+        <div className="overflow-y-auto flex-1 relative">
+          {loading && <LoadingOverlay message="Loading employees..." />}
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <p className="text-gray-600 dark:text-gray-300">Loading employees...</p>

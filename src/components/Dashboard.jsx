@@ -3,6 +3,7 @@ import jsPDF from 'jspdf';
 import { useEmployees } from '../hooks/useEmployees';
 import EmployeeCard from './EmployeeCard';
 import { formatPeso, getEeShare, getErShare } from '../utils/formatters';
+import LoadingOverlay from './LoadingOverlay';
 
 const StatusCard = ({ title, value }) => (
   <div className="bg-[#f2dede] p-4 md:p-6 rounded shadow-md flex flex-col items-center justify-center min-h-32 md:h-40 hover:shadow-lg transition-shadow dark:bg-gray-800">
@@ -198,27 +199,31 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Table View */}
-        {viewMode === 'table' && <EmployeeTable employees={employees} loading={loading} />}
+        <div className="relative">
+          {loading && <LoadingOverlay message="Loading employees..." />}
 
-        {/* Grid View */}
-        {viewMode === 'grid' && (
-          <>
-            {loading ? (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-300">Loading employee data...</div>
-            ) : !employees || employees.length === 0 ? (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-300">No employee data available</div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {employees.map(emp => (
-                  <div key={emp.id}>
-                    <EmployeeCard employee={emp} />
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
-        )}
+          {/* Table View */}
+          {viewMode === 'table' && <EmployeeTable employees={employees} loading={loading} />}
+
+          {/* Grid View */}
+          {viewMode === 'grid' && (
+            <>
+              {loading ? (
+                <div className="text-center py-8 text-gray-500 dark:text-gray-300">Loading employee data...</div>
+              ) : !employees || employees.length === 0 ? (
+                <div className="text-center py-8 text-gray-500 dark:text-gray-300">No employee data available</div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {employees.map(emp => (
+                    <div key={emp.id}>
+                      <EmployeeCard employee={emp} />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </section>
     </>
   );
