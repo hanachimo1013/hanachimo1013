@@ -3,7 +3,7 @@ import { formatPeso, getEeShare, getErShare, getPhotoUrl } from '../utils/format
 
 export default function EmployeeCard({ employee, onEdit, onDelete }) {
   return (
-    <div className="bg-white rounded-lg shadow-md border-2 border-[#e6a891] p-4 hover:shadow-lg transition-shadow">
+    <div className="bg-white rounded-lg shadow-md border-2 border-[#e6a891] p-4 hover:shadow-lg transition-shadow dark:bg-gray-900 dark:border-gray-700">
       {/* Header with photo and name */}
       <div className="flex items-center gap-4 mb-4">
         {getPhotoUrl(employee) ? (
@@ -18,28 +18,28 @@ export default function EmployeeCard({ employee, onEdit, onDelete }) {
           </div>
         )}
         <div className="flex-1">
-          <h3 className="text-lg font-bold text-gray-800">{employee.name}</h3>
-          <p className="text-sm text-gray-600">{employee.designation || 'Employee'}</p>
+          <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{employee.name}</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{employee.designation || 'Employee'}</p>
         </div>
       </div>
 
       {/* Employee Details Grid */}
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="bg-gray-50 p-3 rounded-lg">
-          <p className="text-xs text-gray-600 font-semibold">SSS</p>
-          <p className="text-sm font-bold text-gray-800">{formatPeso(employee.sss)}</p>
+        <div className="bg-gray-50 p-3 rounded-lg dark:bg-gray-800">
+          <p className="text-xs text-gray-600 font-semibold dark:text-gray-300">SSS</p>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{formatPeso(employee.sss)}</p>
         </div>
-        <div className="bg-gray-50 p-3 rounded-lg">
-          <p className="text-xs text-gray-600 font-semibold">PAG-IBIG</p>
-          <p className="text-sm font-bold text-gray-800">{formatPeso(employee.pagibig)}</p>
+        <div className="bg-gray-50 p-3 rounded-lg dark:bg-gray-800">
+          <p className="text-xs text-gray-600 font-semibold dark:text-gray-300">PAG-IBIG</p>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{formatPeso(employee.pagibig)}</p>
         </div>
-        <div className="bg-gray-50 p-3 rounded-lg">
-          <p className="text-xs text-gray-600 font-semibold">PhilHealth</p>
-          <p className="text-sm font-bold text-gray-800">{formatPeso(employee.philhealth)}</p>
+        <div className="bg-gray-50 p-3 rounded-lg dark:bg-gray-800">
+          <p className="text-xs text-gray-600 font-semibold dark:text-gray-300">PhilHealth</p>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{formatPeso(employee.philhealth)}</p>
         </div>
-        <div className="bg-gray-50 p-3 rounded-lg">
-          <p className="text-xs text-gray-600 font-semibold">Total Contributions</p>
-          <p className="text-sm font-bold text-gray-800">
+        <div className="bg-gray-50 p-3 rounded-lg dark:bg-gray-800">
+          <p className="text-xs text-gray-600 font-semibold dark:text-gray-300">Total Contributions</p>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">
             {formatPeso((employee.sss || 0) + (employee.pagibig || 0) + (employee.philhealth || 0))}
           </p>
         </div>

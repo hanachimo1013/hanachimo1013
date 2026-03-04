@@ -239,10 +239,10 @@ export default function Reports() {
   }
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md flex flex-col">
+    <div className="bg-white p-8 rounded-lg shadow-md flex flex-col dark:bg-gray-900 dark:text-gray-100">
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">Reports</h2>
-        <p className="text-gray-600">Generate and view insurance and salary distribution reports</p>
+        <h2 className="text-3xl font-bold text-gray-800 mb-2 dark:text-gray-100">Reports</h2>
+        <p className="text-gray-600 dark:text-gray-300">Generate and view insurance and salary distribution reports</p>
       </div>
 
       {!selectedReport ? (
@@ -251,13 +251,15 @@ export default function Reports() {
           <div className="grid grid-cols-2 gap-6 mb-8">
             <div 
               onClick={() => setSelectedReport('insurance')}
-              className="border-2 border-gray-200 rounded-lg p-6 hover:border-[#d97706] hover:shadow-lg transition-all cursor-pointer flex flex-col text-center"
+              className="border-2 border-gray-200 rounded-lg p-6 hover:border-[#d97706] hover:shadow-lg transition-all cursor-pointer flex flex-col text-center dark:border-gray-700 dark:bg-gray-800"
             >
-              <div className="mb-3 text-2xl text-gray-700 text-center">
-                <i className="bi bi-clipboard2-pulse" aria-hidden="true" />
+              <div className="mb-3 flex justify-center">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600 shadow-sm dark:bg-blue-900/40 dark:text-blue-300">
+                  <i className="bi bi-clipboard2-pulse" aria-hidden="true" />
+                </span>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Insurance Payment Report</h3>
-              <p className="text-gray-600 text-sm mb-4 flex-1">Overall total and detailed distribution of SSS, PAG-IBIG, and PhilHealth</p>
+              <h3 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-100">Insurance Payment Report</h3>
+              <p className="text-gray-600 text-sm mb-4 flex-1 dark:text-gray-300">Overall total and detailed distribution of SSS, PAG-IBIG, and PhilHealth</p>
               <button className="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-4 py-2 rounded-lg font-medium transition-all">
                 <i className="bi bi-graph-up mr-2" aria-hidden="true" />
                 View Report
@@ -266,13 +268,15 @@ export default function Reports() {
 
             <div 
               onClick={() => setSelectedReport('salary')}
-              className="border-2 border-gray-200 rounded-lg p-6 hover:border-[#d97706] hover:shadow-lg transition-all cursor-pointer flex flex-col text-center"
+              className="border-2 border-gray-200 rounded-lg p-6 hover:border-[#d97706] hover:shadow-lg transition-all cursor-pointer flex flex-col text-center dark:border-gray-700 dark:bg-gray-800"
             >
-              <div className="mb-3 text-2xl text-gray-700 text-center">
-                <i className="bi bi-cash-coin" aria-hidden="true" />
+              <div className="mb-3 flex justify-center">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 shadow-sm dark:bg-emerald-900/40 dark:text-emerald-300">
+                  <i className="bi bi-cash-coin" aria-hidden="true" />
+                </span>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Salary Distribution Report</h3>
-              <p className="text-gray-600 text-sm mb-4 flex-1">Employee and Employer share breakdown with totals</p>
+              <h3 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-100">Salary Distribution Report</h3>
+              <p className="text-gray-600 text-sm mb-4 flex-1 dark:text-gray-300">Employee and Employer share breakdown with totals</p>
               <button className="bg-[#10b981] hover:bg-[#059669] text-white px-4 py-2 rounded-lg font-medium transition-all">
                 <i className="bi bi-graph-up-arrow mr-2" aria-hidden="true" />
                 View Report
@@ -295,27 +299,27 @@ export default function Reports() {
             <h3 className="text-2xl font-bold text-gray-800 mb-6">Insurance Payment Report</h3>
             
             {/* Overall Total */}
-            <div className="bg-gradient-to-r from-[#f2dede] to-[#fce4ec] p-6 rounded-lg shadow-md mb-6">
+            <div className="bg-gradient-to-r from-[#f2dede] to-[#fce4ec] p-6 rounded-lg shadow-md mb-6 dark:from-gray-800 dark:to-gray-900">
               <p className="text-gray-600 text-sm mb-2">Overall Total Insurance Payments</p>
               <p className="text-4xl font-bold text-[#dc2626]">{formatPeso(totalPayments)}</p>
             </div>
 
             {/* Distribution Breakdown */}
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="bg-blue-50 border-l-4 border-[#3b82f6] p-6 rounded">
-                <p className="text-gray-600 text-sm mb-2">SSS</p>
+              <div className="bg-blue-50 border-l-4 border-[#3b82f6] p-6 rounded dark:bg-gray-800">
+                <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">SSS</p>
                 <p className="text-2xl font-bold text-[#3b82f6]">{formatPeso(totals.sss)}</p>
-                <p className="text-xs text-gray-600 mt-2">({((totals.sss / totalPayments) * 100).toFixed(1)}%)</p>
+                <p className="text-xs text-gray-600 mt-2 dark:text-gray-300">({((totals.sss / totalPayments) * 100).toFixed(1)}%)</p>
               </div>
-              <div className="bg-green-50 border-l-4 border-[#10b981] p-6 rounded">
-                <p className="text-gray-600 text-sm mb-2">PAG-IBIG</p>
+              <div className="bg-green-50 border-l-4 border-[#10b981] p-6 rounded dark:bg-gray-800">
+                <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">PAG-IBIG</p>
                 <p className="text-2xl font-bold text-[#10b981]">{formatPeso(totals.pagibig)}</p>
-                <p className="text-xs text-gray-600 mt-2">({((totals.pagibig / totalPayments) * 100).toFixed(1)}%)</p>
+                <p className="text-xs text-gray-600 mt-2 dark:text-gray-300">({((totals.pagibig / totalPayments) * 100).toFixed(1)}%)</p>
               </div>
-              <div className="bg-purple-50 border-l-4 border-[#8b5cf6] p-6 rounded">
-                <p className="text-gray-600 text-sm mb-2">PhilHealth</p>
+              <div className="bg-purple-50 border-l-4 border-[#8b5cf6] p-6 rounded dark:bg-gray-800">
+                <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">PhilHealth</p>
                 <p className="text-2xl font-bold text-[#8b5cf6]">{formatPeso(totals.philhealth)}</p>
-                <p className="text-xs text-gray-600 mt-2">({((totals.philhealth / totalPayments) * 100).toFixed(1)}%)</p>
+                <p className="text-xs text-gray-600 mt-2 dark:text-gray-300">({((totals.philhealth / totalPayments) * 100).toFixed(1)}%)</p>
               </div>
             </div>
 
@@ -323,21 +327,21 @@ export default function Reports() {
             <div className="mb-6 overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b-2 border-[#e6a891] bg-gray-100">
-                    <th className="px-4 py-3 text-left font-bold text-gray-700">Employee</th>
-                    <th className="px-4 py-3 text-left font-bold text-gray-700">SSS</th>
-                    <th className="px-4 py-3 text-left font-bold text-gray-700">PAG-IBIG</th>
-                    <th className="px-4 py-3 text-left font-bold text-gray-700">PhilHealth</th>
-                    <th className="px-4 py-3 text-left font-bold text-gray-700">Total</th>
+                  <tr className="border-b-2 border-[#e6a891] bg-gray-100 dark:bg-gray-800 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Employee</th>
+                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">SSS</th>
+                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">PAG-IBIG</th>
+                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">PhilHealth</th>
+                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Total</th>
                   </tr>
                 </thead>
                 <tbody>
                   {normalizedEmployees.map((emp) => (
-                    <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors">
-                      <td className="px-4 py-3 font-medium text-gray-800">{emp.name}</td>
-                      <td className="px-4 py-3 text-gray-800">{formatPeso(emp.sss)}</td>
-                      <td className="px-4 py-3 text-gray-800">{formatPeso(emp.pagibig)}</td>
-                      <td className="px-4 py-3 text-gray-800">{formatPeso(emp.philhealth)}</td>
+                    <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors dark:border-gray-700 dark:hover:bg-gray-800/60">
+                      <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-100">{emp.name}</td>
+                      <td className="px-4 py-3 text-gray-800 dark:text-gray-200">{formatPeso(emp.sss)}</td>
+                      <td className="px-4 py-3 text-gray-800 dark:text-gray-200">{formatPeso(emp.pagibig)}</td>
+                      <td className="px-4 py-3 text-gray-800 dark:text-gray-200">{formatPeso(emp.philhealth)}</td>
                       <td className="px-4 py-3 font-bold text-[#dc2626]">{formatPeso((emp.sss || 0) + (emp.pagibig || 0) + (emp.philhealth || 0))}</td>
                     </tr>
                   ))}
@@ -426,18 +430,18 @@ export default function Reports() {
             <h3 className="text-2xl font-bold text-gray-800 mb-6">Salary Distribution Report</h3>
             
             {/* Overall Summary */}
-            <div className="bg-gradient-to-r from-[#f2dede] to-[#fce4ec] p-6 rounded-lg shadow-md mb-6">
+            <div className="bg-gradient-to-r from-[#f2dede] to-[#fce4ec] p-6 rounded-lg shadow-md mb-6 dark:from-gray-800 dark:to-gray-900">
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <p className="text-gray-600 text-sm mb-2">Employee Share (EE) Total</p>
+                  <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Employee Share (EE) Total</p>
                   <p className="text-2xl font-bold text-[#10b981]">{formatPeso(salaryData.eeTotal)}</p>
                 </div>
                 <div>
-                  <p className="text-gray-600 text-sm mb-2">Employer Share (ER) Total</p>
+                  <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Employer Share (ER) Total</p>
                   <p className="text-2xl font-bold text-[#3b82f6]">{formatPeso(salaryData.erTotal)}</p>
                 </div>
                 <div>
-                  <p className="text-gray-600 text-sm mb-2">Grand Total</p>
+                  <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Grand Total</p>
                   <p className="text-2xl font-bold text-[#dc2626]">{formatPeso(salaryData.totalPayments)}</p>
                 </div>
               </div>
@@ -445,12 +449,12 @@ export default function Reports() {
 
             {/* Share Distribution */}
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-green-50 border-l-4 border-[#10b981] p-6 rounded">
-                <p className="text-gray-600 text-sm mb-2">EE Share Percentage</p>
+              <div className="bg-green-50 border-l-4 border-[#10b981] p-6 rounded dark:bg-gray-800">
+                <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">EE Share Percentage</p>
                 <p className="text-3xl font-bold text-[#10b981]">{((salaryData.eeTotal / salaryData.totalPayments) * 100).toFixed(1)}%</p>
               </div>
-              <div className="bg-blue-50 border-l-4 border-[#3b82f6] p-6 rounded">
-                <p className="text-gray-600 text-sm mb-2">ER Share Percentage</p>
+              <div className="bg-blue-50 border-l-4 border-[#3b82f6] p-6 rounded dark:bg-gray-800">
+                <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">ER Share Percentage</p>
                 <p className="text-3xl font-bold text-[#3b82f6]">{((salaryData.erTotal / salaryData.totalPayments) * 100).toFixed(1)}%</p>
               </div>
             </div>
@@ -459,17 +463,17 @@ export default function Reports() {
             <div className="mb-6 overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b-2 border-[#e6a891] bg-gray-100">
-                    <th className="px-4 py-3 text-left font-bold text-gray-700">Employee</th>
-                    <th className="px-4 py-3 text-left font-bold text-gray-700">EE Share</th>
-                    <th className="px-4 py-3 text-left font-bold text-gray-700">ER Share</th>
-                    <th className="px-4 py-3 text-left font-bold text-gray-700">Total</th>
+                  <tr className="border-b-2 border-[#e6a891] bg-gray-100 dark:bg-gray-800 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Employee</th>
+                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">EE Share</th>
+                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">ER Share</th>
+                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Total</th>
                   </tr>
                 </thead>
                 <tbody>
                   {normalizedEmployees.map((emp) => (
-                    <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors">
-                      <td className="px-4 py-3 font-medium text-gray-800">{emp.name}</td>
+                    <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors dark:border-gray-700 dark:hover:bg-gray-800/60">
+                      <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-100">{emp.name}</td>
                       <td className="px-4 py-3 text-[#10b981] font-semibold">{formatPeso(emp.eeShare)}</td>
                       <td className="px-4 py-3 text-[#3b82f6] font-semibold">{formatPeso(emp.erShare)}</td>
                       <td className="px-4 py-3 font-bold text-[#dc2626]">{formatPeso(emp.eeShare + emp.erShare)}</td>

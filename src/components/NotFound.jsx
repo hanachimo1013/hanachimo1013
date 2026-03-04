@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen w-screen bg-gradient-to-br from-[#0f172a] via-[#1f2937] to-[#3b0a2a] text-white">
+    <main className="min-h-screen w-screen bg-gradient-to-br from-[#0f172a] via-[#1f2937] to-[#3b0a2a] text-white dark:from-[#05060a] dark:via-[#0f172a] dark:to-[#1f0a18]">
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col items-center justify-center px-6 py-16 text-center">
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs tracking-[0.3em] uppercase text-white/80">
           <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />

@@ -83,79 +83,79 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-50 p-6 rounded-lg border-2 border-[#e6a891] mb-8">
-      <h3 className="text-xl font-bold text-gray-800 mb-6">
+    <form onSubmit={handleSubmit} className="bg-gray-50 p-6 rounded-lg border-2 border-[#e6a891] mb-8 dark:bg-gray-800 dark:border-gray-700">
+      <h3 className="text-xl font-bold text-gray-800 mb-6 dark:text-gray-100">
         {initialData ? 'Edit Employee' : 'Add New Employee'}
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-semibold text-black mb-2">Name *</label>
+          <label className="block text-sm font-semibold text-black mb-2 dark:text-gray-200">Name *</label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleInputChange}
             required
-            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white"
+            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
             placeholder="Employee name"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-black mb-2">Designation (Work) *</label>
+          <label className="block text-sm font-semibold text-black mb-2 dark:text-gray-200">Designation (Work) *</label>
           <input
             type="text"
             name="designation"
             value={formData.designation}
             onChange={handleInputChange}
             required
-            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white"
+            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
             placeholder="e.g., Software Engineer, Manager"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-black mb-2">SSS (PHP)</label>
+          <label className="block text-sm font-semibold text-black mb-2 dark:text-gray-200">SSS (PHP)</label>
           <input
             type="number"
             name="sss"
             value={formData.sss}
             onChange={handleInputChange}
             step="0.01"
-            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white"
+            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
             placeholder="0.00"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-black mb-2">PAG-IBIG (PHP)</label>
+          <label className="block text-sm font-semibold text-black mb-2 dark:text-gray-200">PAG-IBIG (PHP)</label>
           <input
             type="number"
             name="pagibig"
             value={formData.pagibig}
             onChange={handleInputChange}
             step="0.01"
-            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white"
+            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
             placeholder="0.00"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-black mb-2">PhilHealth (PHP)</label>
+          <label className="block text-sm font-semibold text-black mb-2 dark:text-gray-200">PhilHealth (PHP)</label>
           <input
             type="number"
             name="philhealth"
             value={formData.philhealth}
             onChange={handleInputChange}
             step="0.01"
-            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white"
+            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
             placeholder="0.00"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-black mb-2">EE Share (Employee) (PHP) *</label>
+          <label className="block text-sm font-semibold text-black mb-2 dark:text-gray-200">EE Share (Employee) (PHP) *</label>
           <input
             type="number"
             name="eeShare"
@@ -163,13 +163,13 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
             onChange={handleInputChange}
             step="0.01"
             required
-            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white"
+            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
             placeholder="0.00"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-black mb-2">ER Share (Employer) (PHP) *</label>
+          <label className="block text-sm font-semibold text-black mb-2 dark:text-gray-200">ER Share (Employer) (PHP) *</label>
           <input
             type="number"
             name="erShare"
@@ -177,18 +177,18 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
             onChange={handleInputChange}
             step="0.01"
             required
-            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white"
+            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
             placeholder="0.00"
           />
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-semibold text-black mb-2">Profile Photo</label>
+          <label className="block text-sm font-semibold text-black mb-2 dark:text-gray-200">Profile Photo</label>
           <input
             type="file"
             accept="image/*"
             onChange={handlePhotoChange}
-            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white"
+            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#d97706] focus:outline-none text-black bg-white dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
           />
           {photoPreview && (
             <div className="mt-4 flex justify-center">
@@ -225,7 +225,7 @@ const EmployeeTable = ({ employees, loading, onEdit, onDelete }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-gray-600">Loading employees...</p>
+        <p className="text-gray-600 dark:text-gray-300">Loading employees...</p>
       </div>
     );
   }
@@ -233,7 +233,7 @@ const EmployeeTable = ({ employees, loading, onEdit, onDelete }) => {
   if (!employees || employees.length === 0) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-gray-600">No employees found</p>
+        <p className="text-gray-600 dark:text-gray-300">No employees found</p>
       </div>
     );
   }
@@ -242,21 +242,21 @@ const EmployeeTable = ({ employees, loading, onEdit, onDelete }) => {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b-2 border-[#e6a891] bg-gray-50">
-            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700">Photo</th>
-            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700">Name</th>
-            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700">Designation</th>
-            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700">SSS</th>
-            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700">PAG-IBIG</th>
-            <th className="hidden md:table-cell px-4 py-3 text-left font-bold text-gray-700">PhilHealth</th>
-            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700">EE Share</th>
-            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700">ER Share</th>
-            <th className="px-2 md:px-4 py-3 text-center font-bold text-gray-700">Actions</th>
+          <tr className="border-b-2 border-[#e6a891] bg-gray-50 dark:bg-gray-800">
+            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Photo</th>
+            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Name</th>
+            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Designation</th>
+            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">SSS</th>
+            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">PAG-IBIG</th>
+            <th className="hidden md:table-cell px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">PhilHealth</th>
+            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">EE Share</th>
+            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">ER Share</th>
+            <th className="px-2 md:px-4 py-3 text-center font-bold text-gray-700 dark:text-gray-200">Actions</th>
           </tr>
         </thead>
         <tbody>
           {employees.map((emp) => (
-            <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors">
+            <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors dark:border-gray-700 dark:hover:bg-gray-800/60">
               <td className="px-2 md:px-4 py-3">
                 {getPhotoUrl(emp) ? (
                   <img src={getPhotoUrl(emp)} alt={emp.name} className="w-8 h-8 rounded-full object-cover" />
@@ -266,11 +266,11 @@ const EmployeeTable = ({ employees, loading, onEdit, onDelete }) => {
                   </div>
                 )}
               </td>
-              <td className="px-2 md:px-4 py-3 font-medium text-gray-800">{emp.name}</td>
-              <td className="px-2 md:px-4 py-3 text-gray-700 text-xs md:text-sm">{emp.designation || '-'}</td>
-              <td className="px-2 md:px-4 py-3 text-gray-700">{formatPeso(emp.sss)}</td>
-              <td className="px-2 md:px-4 py-3 text-gray-700">{formatPeso(emp.pagibig)}</td>
-              <td className="hidden md:table-cell px-4 py-3 text-gray-700">{formatPeso(emp.philhealth)}</td>
+              <td className="px-2 md:px-4 py-3 font-medium text-gray-800 dark:text-gray-100">{emp.name}</td>
+              <td className="px-2 md:px-4 py-3 text-gray-700 text-xs md:text-sm dark:text-gray-300">{emp.designation || '-'}</td>
+              <td className="px-2 md:px-4 py-3 text-gray-700 dark:text-gray-200">{formatPeso(emp.sss)}</td>
+              <td className="px-2 md:px-4 py-3 text-gray-700 dark:text-gray-200">{formatPeso(emp.pagibig)}</td>
+              <td className="hidden md:table-cell px-4 py-3 text-gray-700 dark:text-gray-200">{formatPeso(emp.philhealth)}</td>
               <td className="px-2 md:px-4 py-3 text-[#10b981] font-semibold">{formatPeso(getEeShare(emp))}</td>
               <td className="px-2 md:px-4 py-3 text-[#3b82f6] font-semibold">{formatPeso(getErShare(emp))}</td>
               <td className="px-2 md:px-4 py-3 text-center">
@@ -348,15 +348,15 @@ export default function Employees() {
   };
 
   return (
-    <section className="bg-white rounded-lg shadow-md flex-1 flex flex-col overflow-hidden p-4 md:p-8">
+    <section className="bg-white rounded-lg shadow-md flex-1 flex flex-col overflow-hidden p-4 md:p-8 dark:bg-gray-900 dark:text-gray-100">
       <div className="mb-6">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-1">Employee Management</h2>
-        <p className="text-xs md:text-base text-gray-600">Manage and view all employees in the system</p>
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-1 dark:text-gray-100">Employee Management</h2>
+        <p className="text-xs md:text-base text-gray-600 dark:text-gray-300">Manage and view all employees in the system</p>
       </div>
 
       {error && (
-        <div className="mb-6 p-4 bg-red-100 border-2 border-red-500 rounded-lg">
-          <p className="text-red-700 font-semibold">{error}</p>
+        <div className="mb-6 p-4 bg-red-100 border-2 border-red-500 rounded-lg dark:bg-red-900/40 dark:border-red-700">
+          <p className="text-red-700 font-semibold dark:text-red-200">{error}</p>
         </div>
       )}
 
@@ -421,11 +421,11 @@ export default function Employees() {
         <div className="overflow-y-auto flex-1">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <p className="text-gray-600">Loading employees...</p>
+              <p className="text-gray-600 dark:text-gray-300">Loading employees...</p>
             </div>
           ) : !employees || employees.length === 0 ? (
             <div className="flex items-center justify-center py-12">
-              <p className="text-gray-600">No employees found</p>
+              <p className="text-gray-600 dark:text-gray-300">No employees found</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
