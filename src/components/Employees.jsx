@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useEmployees } from '../hooks/useEmployees';
 import EmployeeCard from './EmployeeCard';
+import { formatPeso, getEeShare, getErShare, getPhotoUrl } from '../utils/formatters';
 
 const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = false }) => {
-  const [formData, setFormData] = useState(initialData || {
-    name: '',
-    designation: '',
-    sss: '',
-    pagibig: '',
-    philhealth: '',
-    eeShare: '',
-    erShare: '',
-    photoUrl: ''
-  });
+  const [formData, setFormData] = useState(
+    initialData || {
+      name: '',
+      designation: '',
+      sss: '',
+      pagibig: '',
+      philhealth: '',
+      eeShare: '',
+      erShare: '',
+      photoUrl: ''
+    }
+  );
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(initialData?.photoUrl || null);
 
-  // Auto-fill form when initialData changes (when edit button is clicked)
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -32,7 +34,6 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
       setPhotoPreview(initialData.photoUrl || null);
       setPhotoFile(null);
     } else {
-      // Reset form for new employee
       setFormData({
         name: '',
         designation: '',
@@ -50,7 +51,7 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value
     }));
@@ -88,7 +89,6 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Name */}
         <div>
           <label className="block text-sm font-semibold text-black mb-2">Name *</label>
           <input
@@ -102,7 +102,6 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
           />
         </div>
 
-        {/* Designation */}
         <div>
           <label className="block text-sm font-semibold text-black mb-2">Designation (Work) *</label>
           <input
@@ -116,9 +115,8 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
           />
         </div>
 
-        {/* SSS */}
         <div>
-          <label className="block text-sm font-semibold text-black mb-2">SSS (₱)</label>
+          <label className="block text-sm font-semibold text-black mb-2">SSS (PHP)</label>
           <input
             type="number"
             name="sss"
@@ -130,9 +128,8 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
           />
         </div>
 
-        {/* PAG-IBIG */}
         <div>
-          <label className="block text-sm font-semibold text-black mb-2">PAG-IBIG (₱)</label>
+          <label className="block text-sm font-semibold text-black mb-2">PAG-IBIG (PHP)</label>
           <input
             type="number"
             name="pagibig"
@@ -144,9 +141,8 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
           />
         </div>
 
-        {/* PhilHealth */}
         <div>
-          <label className="block text-sm font-semibold text-black mb-2">PhilHealth (₱)</label>
+          <label className="block text-sm font-semibold text-black mb-2">PhilHealth (PHP)</label>
           <input
             type="number"
             name="philhealth"
@@ -158,9 +154,8 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
           />
         </div>
 
-        {/* EE Share */}
         <div>
-          <label className="block text-sm font-semibold text-black mb-2">EE Share (Employee) (₱) *</label>
+          <label className="block text-sm font-semibold text-black mb-2">EE Share (Employee) (PHP) *</label>
           <input
             type="number"
             name="eeShare"
@@ -173,9 +168,8 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
           />
         </div>
 
-        {/* ER Share */}
         <div>
-          <label className="block text-sm font-semibold text-black mb-2">ER Share (Employer) (₱) *</label>
+          <label className="block text-sm font-semibold text-black mb-2">ER Share (Employer) (PHP) *</label>
           <input
             type="number"
             name="erShare"
@@ -188,7 +182,6 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
           />
         </div>
 
-        {/* Profile Photo */}
         <div className="md:col-span-2">
           <label className="block text-sm font-semibold text-black mb-2">Profile Photo</label>
           <input
@@ -205,7 +198,6 @@ const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = fals
         </div>
       </div>
 
-      {/* Form Actions */}
       <div className="flex gap-4 mt-8 justify-end">
         <button
           type="button"
@@ -264,8 +256,8 @@ const EmployeeTable = ({ employees, loading, onEdit, onDelete }) => {
           {employees.map((emp) => (
             <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors">
               <td className="px-2 md:px-4 py-3">
-                {emp.photo_url ? (
-                  <img src={emp.photo_url} alt={emp.name} className="w-8 h-8 rounded-full object-cover" />
+                {getPhotoUrl(emp) ? (
+                  <img src={getPhotoUrl(emp)} alt={emp.name} className="w-8 h-8 rounded-full object-cover" />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-[#bc7676] flex items-center justify-center text-white text-xs font-bold">
                     {emp.name?.charAt(0).toUpperCase()}
@@ -274,23 +266,23 @@ const EmployeeTable = ({ employees, loading, onEdit, onDelete }) => {
               </td>
               <td className="px-2 md:px-4 py-3 font-medium text-gray-800">{emp.name}</td>
               <td className="px-2 md:px-4 py-3 text-gray-700 text-xs md:text-sm">{emp.designation || '-'}</td>
-              <td className="px-2 md:px-4 py-3 text-gray-700">₱{emp.sss?.toLocaleString('en-PH') || 0}</td>
-              <td className="px-2 md:px-4 py-3 text-gray-700">₱{emp.pagibig?.toLocaleString('en-PH') || 0}</td>
-              <td className="hidden md:table-cell px-4 py-3 text-gray-700">₱{emp.philhealth?.toLocaleString('en-PH') || 0}</td>
-              <td className="px-2 md:px-4 py-3 text-[#10b981] font-semibold">₱{emp.eeshare?.toLocaleString('en-PH') || 0}</td>
-              <td className="px-2 md:px-4 py-3 text-[#3b82f6] font-semibold">₱{emp.ershare?.toLocaleString('en-PH') || 0}</td>
+              <td className="px-2 md:px-4 py-3 text-gray-700">{formatPeso(emp.sss)}</td>
+              <td className="px-2 md:px-4 py-3 text-gray-700">{formatPeso(emp.pagibig)}</td>
+              <td className="hidden md:table-cell px-4 py-3 text-gray-700">{formatPeso(emp.philhealth)}</td>
+              <td className="px-2 md:px-4 py-3 text-[#10b981] font-semibold">{formatPeso(getEeShare(emp))}</td>
+              <td className="px-2 md:px-4 py-3 text-[#3b82f6] font-semibold">{formatPeso(getErShare(emp))}</td>
               <td className="px-2 md:px-4 py-3 text-center">
                 <button
                   onClick={() => onEdit(emp)}
                   className="px-2 py-1 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded text-xs font-semibold mr-2 transition-all"
                 >
-                  ✏️ Edit
+                  Edit
                 </button>
                 <button
                   onClick={() => onDelete(emp.id)}
                   className="px-2 py-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded text-xs font-semibold transition-all"
                 >
-                  🗑️ Delete
+                  Delete
                 </button>
               </td>
             </tr>
@@ -307,7 +299,7 @@ export default function Employees() {
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [viewMode, setViewMode] = useState('table'); // 'table' or 'grid'
+  const [viewMode, setViewMode] = useState('table');
 
   const handleFormSubmit = async (formData) => {
     setIsSubmitting(true);
@@ -319,12 +311,12 @@ export default function Employees() {
       } else {
         result = await addEmployee(formData);
       }
-      
+
       if (!result.success) {
         setError(result.error || 'Failed to save employee');
         return;
       }
-      
+
       setShowForm(false);
       setEditingEmployee(null);
     } catch (err) {
@@ -358,14 +350,12 @@ export default function Employees() {
         <p className="text-xs md:text-base text-gray-600">Manage and view all employees in the system</p>
       </div>
 
-      {/* Error Message */}
       {error && (
         <div className="mb-6 p-4 bg-red-100 border-2 border-red-500 rounded-lg">
           <p className="text-red-700 font-semibold">{error}</p>
         </div>
       )}
 
-      {/* View Toggle & Add Button */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div className="flex gap-2">
           <button
@@ -376,7 +366,7 @@ export default function Employees() {
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
-            📊 Table View
+            Table View
           </button>
           <button
             onClick={() => setViewMode('grid')}
@@ -386,7 +376,7 @@ export default function Employees() {
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
-            🎴 Card View
+            Card View
           </button>
         </div>
 
@@ -395,12 +385,11 @@ export default function Employees() {
             onClick={() => setShowForm(true)}
             className="self-start md:self-auto px-6 py-2 bg-[#10b981] hover:bg-[#059669] text-white rounded-lg font-semibold transition-all"
           >
-            ➕ Add New Employee
+            Add New Employee
           </button>
         )}
       </div>
 
-      {/* Form */}
       {showForm && (
         <EmployeeForm
           onSubmit={handleFormSubmit}
@@ -410,7 +399,6 @@ export default function Employees() {
         />
       )}
 
-      {/* Table View */}
       {viewMode === 'table' && (
         <div className="overflow-y-auto flex-1">
           <EmployeeTable
@@ -422,7 +410,6 @@ export default function Employees() {
         </div>
       )}
 
-      {/* Grid View */}
       {viewMode === 'grid' && (
         <div className="overflow-y-auto flex-1">
           {loading ? (
@@ -435,7 +422,7 @@ export default function Employees() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {employees.map(emp => (
+              {employees.map((emp) => (
                 <EmployeeCard
                   key={emp.id}
                   employee={emp}

@@ -14,7 +14,8 @@ const SidebarBtn = ({ to, text, icon, onClick }) => {
             : 'bg-[#d97706] hover:bg-[#b45309] text-white hover:shadow-lg'
         }`}
       >
-        {icon} {text}
+        {icon && <span className="mr-2 inline-flex text-sm">{icon}</span>}
+        {text}
       </button>
     </Link>
   );
@@ -77,12 +78,12 @@ export default function Layout({ children }) {
           <p className="text-xs text-gray-600 mb-8">System Administrator</p>
           
           <div className="w-full flex-1">
-            <SidebarBtn to="/dashboard" text="Dashboard" icon="📊" onClick={closeSidebar} />
-            <SidebarBtn to="/employees" text="Employees" icon="👥" onClick={closeSidebar} />
-            <SidebarBtn to="/settings" text="Settings" icon="⚙️" onClick={closeSidebar} />
-            <SidebarBtn to="/reports" text="Reports" icon="📈" onClick={closeSidebar} />
+            <SidebarBtn to="/dashboard" text="Dashboard" icon={<i className="bi bi-speedometer2" />} onClick={closeSidebar} />
+            <SidebarBtn to="/employees" text="Employees" icon={<i className="bi bi-people-fill" />} onClick={closeSidebar} />
+            <SidebarBtn to="/settings" text="Settings" icon={<i className="bi bi-gear-fill" />} onClick={closeSidebar} />
+            <SidebarBtn to="/reports" text="Reports" icon={<i className="bi bi-bar-chart-fill" />} onClick={closeSidebar} />
             <button className="w-full py-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg shadow-md mt-auto flex-shrink-0 font-semibold transition-all hover:shadow-lg">
-            🚪 Logout
+            Logout
           </button>
           </div>
         </aside>

@@ -7,7 +7,7 @@ export default function Settings() {
       <div className="space-y-6">
         <div className="border-b pb-6">
           <div className="flex items-center mb-3">
-            <span className="text-2xl mr-3">⚙️</span>
+            <span className="text-2xl mr-3">SYS</span>
             <div>
               <p className="font-semibold text-gray-800 text-lg">System Settings</p>
               <p className="text-gray-600 text-sm">Configure system-wide preferences and configurations</p>
@@ -19,7 +19,7 @@ export default function Settings() {
         </div>
         <div className="border-b pb-6">
           <div className="flex items-center mb-3">
-            <span className="text-2xl mr-3">👤</span>
+            <span className="text-2xl mr-3">USR</span>
             <div>
               <p className="font-semibold text-gray-800 text-lg">User Preferences</p>
               <p className="text-gray-600 text-sm">Manage your profile and notification settings</p>
@@ -31,7 +31,7 @@ export default function Settings() {
         </div>
         <div className="pb-6">
           <div className="flex items-center mb-3">
-            <span className="text-2xl mr-3">🔒</span>
+            <span className="text-2xl mr-3">SEC</span>
             <div>
               <p className="font-semibold text-gray-800 text-lg">Security</p>
               <p className="text-gray-600 text-sm">Update password and security settings</p>

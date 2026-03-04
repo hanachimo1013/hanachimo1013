@@ -1,21 +1,30 @@
-import React, { useState, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useEmployees } from '../hooks/useEmployees';
+import { formatPeso, getEeShare, getErShare } from '../utils/formatters';
 
 export default function Reports() {
   const [selectedReport, setSelectedReport] = useState(null);
   const insuranceReportRef = useRef(null);
   const salaryReportRef = useRef(null);
   const { employees, loading } = useEmployees();
+  const normalizedEmployees = useMemo(
+    () =>
+      employees.map((emp) => ({
+        ...emp,
+        eeShare: getEeShare(emp),
+        erShare: getErShare(emp),
+      })),
+    [employees]
+  );
 
   // Calculate totals and distribution
   const calculateInsuranceReport = () => {
     const totals = {
-      sss: employees.reduce((sum, emp) => sum + emp.sss, 0),
-      pagibig: employees.reduce((sum, emp) => sum + emp.pagibig, 0),
-      philhealth: employees.reduce((sum, emp) => sum + emp.philhealth, 0),
+      sss: normalizedEmployees.reduce((sum, emp) => sum + (emp.sss || 0), 0),
+      pagibig: normalizedEmployees.reduce((sum, emp) => sum + (emp.pagibig || 0), 0),
+      philhealth: normalizedEmployees.reduce((sum, emp) => sum + (emp.philhealth || 0), 0),
     };
     
     const totalPayments = Object.values(totals).reduce((a, b) => a + b, 0);
@@ -24,8 +33,8 @@ export default function Reports() {
   };
 
   const calculateSalaryReport = () => {
-    const eeTotal = employees.reduce((sum, emp) => sum + emp.eeShare, 0);
-    const erTotal = employees.reduce((sum, emp) => sum + emp.erShare, 0);
+    const eeTotal = normalizedEmployees.reduce((sum, emp) => sum + (emp.eeShare || 0), 0);
+    const erTotal = normalizedEmployees.reduce((sum, emp) => sum + (emp.erShare || 0), 0);
     const totalPayments = eeTotal + erTotal;
 
     return { eeTotal, erTotal, totalPayments };
@@ -76,7 +85,7 @@ export default function Reports() {
     
     doc.setFont(undefined, 'normal');
     doc.setFontSize(11);
-    doc.text(`Total: ₱${totalPayments.toLocaleString('en-PH')}`, 30, 72);
+    doc.text(`Total: ${formatPeso(totalPayments)}`, 30, 72);
     
     // Divider
     doc.line(20, 80, pageWidth - 20, 80);
@@ -98,7 +107,7 @@ export default function Reports() {
     
     distributions.forEach((dist) => {
       doc.text(`${dist.name}:`, 30, yPosition);
-      doc.text(`₱${dist.amount.toLocaleString('en-PH')} (${dist.percentage}%)`, 80, yPosition);
+      doc.text(`${formatPeso(dist.amount)} (${dist.percentage}%)`, 80, yPosition);
       yPosition += 10;
     });
     
@@ -120,13 +129,13 @@ export default function Reports() {
     yPosition += 8;
     doc.setFont(undefined, 'normal');
     
-    employees.forEach((emp) => {
+    normalizedEmployees.forEach((emp) => {
       const empTotal = emp.sss + emp.pagibig + emp.philhealth;
       doc.text(emp.name.substring(0, 15), 20, yPosition);
-      doc.text(`₱${emp.sss}`, 60, yPosition);
-      doc.text(`₱${emp.pagibig}`, 85, yPosition);
-      doc.text(`₱${emp.philhealth}`, 115, yPosition);
-      doc.text(`₱${empTotal}`, 150, yPosition);
+      doc.text(formatPeso(emp.sss), 60, yPosition);
+      doc.text(formatPeso(emp.pagibig), 85, yPosition);
+      doc.text(formatPeso(emp.philhealth), 115, yPosition);
+      doc.text(formatPeso(empTotal), 150, yPosition);
       yPosition += 7;
     });
     
@@ -164,9 +173,9 @@ export default function Reports() {
     
     doc.setFont(undefined, 'normal');
     doc.setFontSize(11);
-    doc.text(`Employee Share (EE) Total: ₱${eeTotal.toLocaleString('en-PH')}`, 30, 72);
-    doc.text(`Employer Share (ER) Total: ₱${erTotal.toLocaleString('en-PH')}`, 30, 82);
-    doc.text(`Grand Total: ₱${totalPayments.toLocaleString('en-PH')}`, 30, 95);
+    doc.text(`Employee Share (EE) Total: ${formatPeso(eeTotal)}`, 30, 72);
+    doc.text(`Employer Share (ER) Total: ${formatPeso(erTotal)}`, 30, 82);
+    doc.text(`Grand Total: ${formatPeso(totalPayments)}`, 30, 95);
     
     doc.setFont(undefined, 'normal');
     doc.setFontSize(10);
@@ -193,11 +202,11 @@ export default function Reports() {
     yPosition += 8;
     doc.setFont(undefined, 'normal');
     
-    employees.forEach((emp) => {
+    normalizedEmployees.forEach((emp) => {
       doc.text(emp.name.substring(0, 18), 20, yPosition);
-      doc.text(`₱${emp.eeShare.toLocaleString('en-PH')}`, 70, yPosition);
-      doc.text(`₱${emp.erShare.toLocaleString('en-PH')}`, 110, yPosition);
-      doc.text(`₱${(emp.eeShare + emp.erShare).toLocaleString('en-PH')}`, 150, yPosition);
+      doc.text(formatPeso(emp.eeShare), 70, yPosition);
+      doc.text(formatPeso(emp.erShare), 110, yPosition);
+      doc.text(formatPeso(emp.eeShare + emp.erShare), 150, yPosition);
       yPosition += 7;
     });
     
@@ -244,7 +253,7 @@ export default function Reports() {
               onClick={() => setSelectedReport('insurance')}
               className="border-2 border-gray-200 rounded-lg p-6 hover:border-[#d97706] hover:shadow-lg transition-all cursor-pointer flex flex-col"
             >
-              <div className="text-4xl mb-4">💳</div>
+              <div className="text-4xl mb-4">INS</div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Insurance Payment Report</h3>
               <p className="text-gray-600 text-sm mb-4 flex-1">Overall total and detailed distribution of SSS, PAG-IBIG, and PhilHealth</p>
               <button className="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-4 py-2 rounded-lg font-medium transition-all">
@@ -256,7 +265,7 @@ export default function Reports() {
               onClick={() => setSelectedReport('salary')}
               className="border-2 border-gray-200 rounded-lg p-6 hover:border-[#d97706] hover:shadow-lg transition-all cursor-pointer flex flex-col"
             >
-              <div className="text-4xl mb-4">💰</div>
+              <div className="text-4xl mb-4">SAL</div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Salary Distribution Report</h3>
               <p className="text-gray-600 text-sm mb-4 flex-1">Employee and Employer share breakdown with totals</p>
               <button className="bg-[#10b981] hover:bg-[#059669] text-white px-4 py-2 rounded-lg font-medium transition-all">
@@ -273,7 +282,7 @@ export default function Reports() {
               onClick={() => setSelectedReport(null)}
               className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-all mb-4"
             >
-              ← Back to Reports
+              Back to Reports
             </button>
             
             <h3 className="text-2xl font-bold text-gray-800 mb-6">Insurance Payment Report</h3>
@@ -281,24 +290,24 @@ export default function Reports() {
             {/* Overall Total */}
             <div className="bg-gradient-to-r from-[#f2dede] to-[#fce4ec] p-6 rounded-lg shadow-md mb-6">
               <p className="text-gray-600 text-sm mb-2">Overall Total Insurance Payments</p>
-              <p className="text-4xl font-bold text-[#dc2626]">₱{totalPayments.toLocaleString('en-PH')}</p>
+              <p className="text-4xl font-bold text-[#dc2626]">{formatPeso(totalPayments)}</p>
             </div>
 
             {/* Distribution Breakdown */}
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="bg-blue-50 border-l-4 border-[#3b82f6] p-6 rounded">
                 <p className="text-gray-600 text-sm mb-2">SSS</p>
-                <p className="text-2xl font-bold text-[#3b82f6]">₱{totals.sss.toLocaleString('en-PH')}</p>
+                <p className="text-2xl font-bold text-[#3b82f6]">{formatPeso(totals.sss)}</p>
                 <p className="text-xs text-gray-600 mt-2">({((totals.sss / totalPayments) * 100).toFixed(1)}%)</p>
               </div>
               <div className="bg-green-50 border-l-4 border-[#10b981] p-6 rounded">
                 <p className="text-gray-600 text-sm mb-2">PAG-IBIG</p>
-                <p className="text-2xl font-bold text-[#10b981]">₱{totals.pagibig.toLocaleString('en-PH')}</p>
+                <p className="text-2xl font-bold text-[#10b981]">{formatPeso(totals.pagibig)}</p>
                 <p className="text-xs text-gray-600 mt-2">({((totals.pagibig / totalPayments) * 100).toFixed(1)}%)</p>
               </div>
               <div className="bg-purple-50 border-l-4 border-[#8b5cf6] p-6 rounded">
                 <p className="text-gray-600 text-sm mb-2">PhilHealth</p>
-                <p className="text-2xl font-bold text-[#8b5cf6]">₱{totals.philhealth.toLocaleString('en-PH')}</p>
+                <p className="text-2xl font-bold text-[#8b5cf6]">{formatPeso(totals.philhealth)}</p>
                 <p className="text-xs text-gray-600 mt-2">({((totals.philhealth / totalPayments) * 100).toFixed(1)}%)</p>
               </div>
             </div>
@@ -316,13 +325,13 @@ export default function Reports() {
                   </tr>
                 </thead>
                 <tbody>
-                  {employees.map((emp) => (
+                  {normalizedEmployees.map((emp) => (
                     <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors">
                       <td className="px-4 py-3 font-medium text-gray-800">{emp.name}</td>
-                      <td className="px-4 py-3 text-gray-800">₱{emp.sss.toLocaleString('en-PH')}</td>
-                      <td className="px-4 py-3 text-gray-800">₱{emp.pagibig.toLocaleString('en-PH')}</td>
-                      <td className="px-4 py-3 text-gray-800">₱{emp.philhealth.toLocaleString('en-PH')}</td>
-                      <td className="px-4 py-3 font-bold text-[#dc2626]">₱{(emp.sss + emp.pagibig + emp.philhealth).toLocaleString('en-PH')}</td>
+                      <td className="px-4 py-3 text-gray-800">{formatPeso(emp.sss)}</td>
+                      <td className="px-4 py-3 text-gray-800">{formatPeso(emp.pagibig)}</td>
+                      <td className="px-4 py-3 text-gray-800">{formatPeso(emp.philhealth)}</td>
+                      <td className="px-4 py-3 font-bold text-[#dc2626]">{formatPeso((emp.sss || 0) + (emp.pagibig || 0) + (emp.philhealth || 0))}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -354,7 +363,7 @@ export default function Reports() {
                       <Cell fill="#10b981" />
                       <Cell fill="#8b5cf6" />
                     </Pie>
-                    <Tooltip formatter={(value) => `₱${value.toLocaleString('en-PH')}`} />
+                    <Tooltip formatter={(value) => formatPeso(value)} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -363,11 +372,11 @@ export default function Reports() {
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h4 className="font-bold text-gray-800 mb-4">Employee Contributions</h4>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={employees}>
+                  <BarChart data={normalizedEmployees}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} />
                     <YAxis />
-                    <Tooltip formatter={(value) => `₱${value.toLocaleString('en-PH')}`} />
+                    <Tooltip formatter={(value) => formatPeso(value)} />
                     <Legend />
                     <Bar dataKey="sss" stackId="a" fill="#3b82f6" name="SSS" />
                     <Bar dataKey="pagibig" stackId="a" fill="#10b981" name="PAG-IBIG" />
@@ -382,13 +391,13 @@ export default function Reports() {
                 onClick={printInsuranceReport}
                 className="bg-[#f59e0b] hover:bg-[#d97706] text-white px-6 py-2 rounded-lg font-semibold transition-all"
               >
-                🖨️ Print Report
+                Print Report
               </button>
               <button
                 onClick={generateInsurancePaymentReport}
                 className="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-6 py-2 rounded-lg font-semibold transition-all"
               >
-                📥 Download PDF Report
+                Download PDF Report
               </button>
             </div>
           </div>
@@ -401,7 +410,7 @@ export default function Reports() {
               onClick={() => setSelectedReport(null)}
               className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-all mb-4"
             >
-              ← Back to Reports
+              Back to Reports
             </button>
             
             <h3 className="text-2xl font-bold text-gray-800 mb-6">Salary Distribution Report</h3>
@@ -411,15 +420,15 @@ export default function Reports() {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <p className="text-gray-600 text-sm mb-2">Employee Share (EE) Total</p>
-                  <p className="text-2xl font-bold text-[#10b981]">₱{salaryData.eeTotal.toLocaleString('en-PH')}</p>
+                  <p className="text-2xl font-bold text-[#10b981]">{formatPeso(salaryData.eeTotal)}</p>
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm mb-2">Employer Share (ER) Total</p>
-                  <p className="text-2xl font-bold text-[#3b82f6]">₱{salaryData.erTotal.toLocaleString('en-PH')}</p>
+                  <p className="text-2xl font-bold text-[#3b82f6]">{formatPeso(salaryData.erTotal)}</p>
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm mb-2">Grand Total</p>
-                  <p className="text-2xl font-bold text-[#dc2626]">₱{salaryData.totalPayments.toLocaleString('en-PH')}</p>
+                  <p className="text-2xl font-bold text-[#dc2626]">{formatPeso(salaryData.totalPayments)}</p>
                 </div>
               </div>
             </div>
@@ -448,12 +457,12 @@ export default function Reports() {
                   </tr>
                 </thead>
                 <tbody>
-                  {employees.map((emp) => (
+                  {normalizedEmployees.map((emp) => (
                     <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors">
                       <td className="px-4 py-3 font-medium text-gray-800">{emp.name}</td>
-                      <td className="px-4 py-3 text-[#10b981] font-semibold">₱{emp.eeShare.toLocaleString('en-PH')}</td>
-                      <td className="px-4 py-3 text-[#3b82f6] font-semibold">₱{emp.erShare.toLocaleString('en-PH')}</td>
-                      <td className="px-4 py-3 font-bold text-[#dc2626]">₱{(emp.eeShare + emp.erShare).toLocaleString('en-PH')}</td>
+                      <td className="px-4 py-3 text-[#10b981] font-semibold">{formatPeso(emp.eeShare)}</td>
+                      <td className="px-4 py-3 text-[#3b82f6] font-semibold">{formatPeso(emp.erShare)}</td>
+                      <td className="px-4 py-3 font-bold text-[#dc2626]">{formatPeso(emp.eeShare + emp.erShare)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -483,7 +492,7 @@ export default function Reports() {
                       <Cell fill="#10b981" />
                       <Cell fill="#3b82f6" />
                     </Pie>
-                    <Tooltip formatter={(value) => `₱${value.toLocaleString('en-PH')}`} />
+                    <Tooltip formatter={(value) => formatPeso(value)} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -492,11 +501,11 @@ export default function Reports() {
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h4 className="font-bold text-gray-800 mb-4">Employee Share Comparison</h4>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={employees}>
+                  <BarChart data={normalizedEmployees}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} />
                     <YAxis />
-                    <Tooltip formatter={(value) => `₱${value.toLocaleString('en-PH')}`} />
+                    <Tooltip formatter={(value) => formatPeso(value)} />
                     <Legend />
                     <Bar dataKey="eeShare" fill="#10b981" name="EE Share" />
                     <Bar dataKey="erShare" fill="#3b82f6" name="ER Share" />
@@ -510,13 +519,13 @@ export default function Reports() {
                 onClick={printSalaryReport}
                 className="bg-[#f59e0b] hover:bg-[#d97706] text-white px-6 py-2 rounded-lg font-semibold transition-all"
               >
-                🖨️ Print Report
+                Print Report
               </button>
               <button
                 onClick={generateSalaryDistributionReport}
                 className="bg-[#10b981] hover:bg-[#059669] text-white px-6 py-2 rounded-lg font-semibold transition-all"
               >
-                📥 Download PDF Report
+                Download PDF Report
               </button>
             </div>
           </div>

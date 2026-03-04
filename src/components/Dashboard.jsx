@@ -2,8 +2,8 @@ import React, { useMemo, useState } from 'react';
 import jsPDF from 'jspdf';
 import { useEmployees } from '../hooks/useEmployees';
 import EmployeeCard from './EmployeeCard';
+import { formatPeso, getEeShare, getErShare } from '../utils/formatters';
 
-// Sub-component for the Status Cards
 const StatusCard = ({ title, value }) => (
   <div className="bg-[#f2dede] p-4 md:p-6 rounded shadow-md flex flex-col items-center justify-center min-h-32 md:h-40 hover:shadow-lg transition-shadow">
     <span className="text-xs md:text-sm font-semibold text-gray-600 mb-2">{title}</span>
@@ -11,9 +11,6 @@ const StatusCard = ({ title, value }) => (
   </div>
 );
 
-const formatPeso = (value) => `₱${(value || 0).toLocaleString('en-PH')}`;
-const getEeShare = (employee) => employee?.eeshare ?? employee?.eeShare ?? 0;
-const getErShare = (employee) => employee?.ershare ?? employee?.erShare ?? 0;
 
 // Function to generate PDF receipt for employer share
 const generateEmployerReceipt = (employee) => {
@@ -127,7 +124,7 @@ const EmployeeTable = ({ employees, loading }) => {
                   onClick={() => generateEmployerReceipt(emp)}
                   className="bg-[#10b981] hover:bg-[#059669] text-white px-3 py-1 rounded font-semibold transition-colors text-xs"
                 >
-                  📄 Receipt
+                  Receipt
                 </button>
               </td>
             </tr>
@@ -182,7 +179,7 @@ export default function Dashboard() {
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
-              📊 Table
+              Table
             </button>
             <button
               onClick={() => setViewMode('grid')}
@@ -192,7 +189,7 @@ export default function Dashboard() {
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
-              🎴 Cards
+              Cards
             </button>
           </div>
         </div>

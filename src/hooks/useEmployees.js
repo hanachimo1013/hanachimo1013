@@ -61,7 +61,7 @@ export const useEmployees = () => {
       }
 
       // Prepare employee data (remove file from data object)
-      const { photoFile, ...employeeDataWithoutFile } = employeeData;
+      const { photoFile } = employeeData;
       const newEmployee = {
         name: employeeData.name,
         designation: employeeData.designation || '',
@@ -89,7 +89,7 @@ export const useEmployees = () => {
       }
 
       console.log('Employee added successfully:', data[0]);
-      setEmployees([...employees, data[0]]);
+      setEmployees((prev) => [...prev, data[0]]);
       return { success: true, data: data[0] };
     } catch (err) {
       console.error('Error adding employee:', err);
@@ -120,7 +120,7 @@ export const useEmployees = () => {
       }
 
       // Prepare update data (remove file from data object)
-      const { photoFile, ...updateDataWithoutFile } = updates;
+      const { photoFile } = updates;
       const updateData = {
         name: updates.name,
         designation: updates.designation || '',
@@ -149,7 +149,7 @@ export const useEmployees = () => {
       }
 
       console.log('Employee updated successfully:', data[0]);
-      setEmployees(employees.map(emp => emp.id === id ? data[0] : emp));
+      setEmployees((prev) => prev.map((emp) => (emp.id === id ? data[0] : emp)));
       return { success: true, data: data[0] };
     } catch (err) {
       console.error('Error updating employee:', err);
@@ -165,7 +165,7 @@ export const useEmployees = () => {
         .eq('id', id);
 
       if (error) throw error;
-      setEmployees(employees.filter(emp => emp.id !== id));
+      setEmployees((prev) => prev.filter((emp) => emp.id !== id));
       return { success: true };
     } catch (err) {
       console.error('Error deleting employee:', err);

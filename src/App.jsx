@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import Employees from './components/Employees';
 import Settings from './components/Settings';
 import Reports from './components/Reports';
+import NotFound from './components/NotFound';
 
 export default function App() {
   return (
@@ -46,6 +47,7 @@ export default function App() {
             </Layout>
           }
         />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
