@@ -248,7 +248,7 @@ export default function Reports() {
       {!selectedReport ? (
         <>
           {/* Report Selection Grid */}
-          <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 sm:gap-6">
+          <div className="grid grid-cols-1 gap-6 mb-8 sm:grid-cols-2 sm:gap-6">
             <div 
               onClick={() => setSelectedReport('insurance')}
               className="border-2 border-gray-200 rounded-lg p-6 hover:border-[#d97706] hover:shadow-lg transition-all cursor-pointer flex flex-col text-center dark:border-gray-700 dark:bg-gray-800"
@@ -296,29 +296,29 @@ export default function Reports() {
               Back to Reports
             </button>
             
-            <h3 className="text-2xl font-bold text-gray-800 mb-6">Insurance Payment Report</h3>
+            <h3 className="text-2xl font-bold text-gray-800 mb-6 dark:text-white">Insurance Payment Report</h3>
             
             {/* Overall Total */}
             <div className="bg-gradient-to-r from-[#f2dede] to-[#fce4ec] p-6 rounded-lg shadow-md mb-6 dark:from-gray-800 dark:to-gray-900">
-              <p className="text-gray-600 text-sm mb-2">Overall Total Insurance Payments</p>
-              <p className="text-4xl font-bold text-[#dc2626]">{formatPeso(totalPayments)}</p>
+              <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Overall Total Insurance Payments</p>
+              <p className="text-4xl font-bold text-[#dc2626] dark:text-red-300">{formatPeso(totalPayments)}</p>
             </div>
 
             {/* Distribution Breakdown */}
-            <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
               <div className="bg-blue-50 border-l-4 border-[#3b82f6] p-6 rounded dark:bg-gray-800">
                 <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">SSS</p>
-                <p className="text-2xl font-bold text-[#3b82f6]">{formatPeso(totals.sss)}</p>
+                <p className="text-2xl font-bold text-[#3b82f6] dark:text-blue-300">{formatPeso(totals.sss)}</p>
                 <p className="text-xs text-gray-600 mt-2 dark:text-gray-300">({((totals.sss / totalPayments) * 100).toFixed(1)}%)</p>
               </div>
               <div className="bg-green-50 border-l-4 border-[#10b981] p-6 rounded dark:bg-gray-800">
                 <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">PAG-IBIG</p>
-                <p className="text-2xl font-bold text-[#10b981]">{formatPeso(totals.pagibig)}</p>
+                <p className="text-2xl font-bold text-[#10b981] dark:text-emerald-300">{formatPeso(totals.pagibig)}</p>
                 <p className="text-xs text-gray-600 mt-2 dark:text-gray-300">({((totals.pagibig / totalPayments) * 100).toFixed(1)}%)</p>
               </div>
               <div className="bg-purple-50 border-l-4 border-[#8b5cf6] p-6 rounded dark:bg-gray-800">
                 <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">PhilHealth</p>
-                <p className="text-2xl font-bold text-[#8b5cf6]">{formatPeso(totals.philhealth)}</p>
+                <p className="text-2xl font-bold text-[#8b5cf6] dark:text-purple-300">{formatPeso(totals.philhealth)}</p>
                 <p className="text-xs text-gray-600 mt-2 dark:text-gray-300">({((totals.philhealth / totalPayments) * 100).toFixed(1)}%)</p>
               </div>
             </div>
@@ -427,35 +427,35 @@ export default function Reports() {
               Back to Reports
             </button>
             
-            <h3 className="text-2xl font-bold text-gray-800 mb-6">Salary Distribution Report</h3>
+            <h3 className="text-2xl font-bold text-gray-800 mb-6 dark:text-white">Salary Distribution Report</h3>
             
             {/* Overall Summary */}
             <div className="bg-gradient-to-r from-[#f2dede] to-[#fce4ec] p-6 rounded-lg shadow-md mb-6 dark:from-gray-800 dark:to-gray-900">
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div>
                   <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Employee Share (EE) Total</p>
-                  <p className="text-2xl font-bold text-[#10b981]">{formatPeso(salaryData.eeTotal)}</p>
+                  <p className="text-2xl font-bold text-[#10b981] dark:text-emerald-300">{formatPeso(salaryData.eeTotal)}</p>
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Employer Share (ER) Total</p>
-                  <p className="text-2xl font-bold text-[#3b82f6]">{formatPeso(salaryData.erTotal)}</p>
+                  <p className="text-2xl font-bold text-[#3b82f6] dark:text-blue-300">{formatPeso(salaryData.erTotal)}</p>
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Grand Total</p>
-                  <p className="text-2xl font-bold text-[#dc2626]">{formatPeso(salaryData.totalPayments)}</p>
+                  <p className="text-2xl font-bold text-[#dc2626] dark:text-red-300">{formatPeso(salaryData.totalPayments)}</p>
                 </div>
               </div>
             </div>
 
             {/* Share Distribution */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
               <div className="bg-green-50 border-l-4 border-[#10b981] p-6 rounded dark:bg-gray-800">
                 <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">EE Share Percentage</p>
-                <p className="text-3xl font-bold text-[#10b981]">{((salaryData.eeTotal / salaryData.totalPayments) * 100).toFixed(1)}%</p>
+                <p className="text-3xl font-bold text-[#10b981] dark:text-emerald-300">{((salaryData.eeTotal / salaryData.totalPayments) * 100).toFixed(1)}%</p>
               </div>
               <div className="bg-blue-50 border-l-4 border-[#3b82f6] p-6 rounded dark:bg-gray-800">
                 <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">ER Share Percentage</p>
-                <p className="text-3xl font-bold text-[#3b82f6]">{((salaryData.erTotal / salaryData.totalPayments) * 100).toFixed(1)}%</p>
+                <p className="text-3xl font-bold text-[#3b82f6] dark:text-blue-300">{((salaryData.erTotal / salaryData.totalPayments) * 100).toFixed(1)}%</p>
               </div>
             </div>
 
