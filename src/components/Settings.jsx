@@ -71,23 +71,25 @@ export default function Settings() {
             </div>
           </div>
           <div className="mt-4 flex justify-center">
-            <div className="flex items-center gap-3">
+            <button
+              type="button"
+              role="switch"
+              aria-checked={theme === 'dark'}
+              aria-label="Dark mode toggle"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              onTouchEnd={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="flex items-center gap-3 select-none"
+            >
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Off</span>
-              <button
-                type="button"
-                aria-pressed={theme === 'dark'}
-                aria-label="Dark mode toggle"
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-300 shadow-inner transition-colors dark:bg-gray-600"
-              >
+              <span className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-300 shadow-inner transition-colors dark:bg-gray-600">
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
                     theme === 'dark' ? 'translate-x-5' : 'translate-x-1'
                   }`}
                 />
-              </button>
+              </span>
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">On</span>
-            </div>
+            </button>
           </div>
         </div>
       </div>

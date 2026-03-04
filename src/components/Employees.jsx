@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useEmployees } from '../hooks/useEmployees';
 import EmployeeCard from './EmployeeCard';
 import { formatPeso, getEeShare, getErShare, getPhotoUrl } from '../utils/formatters';
@@ -304,6 +304,13 @@ export default function Employees() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [viewMode, setViewMode] = useState('table');
+  const formRef = useRef(null);
+
+  useEffect(() => {
+    if (showForm && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [showForm, editingEmployee]);
 
   const handleFormSubmit = async (formData) => {
     setIsSubmitting(true);
@@ -398,12 +405,14 @@ export default function Employees() {
       </div>
 
       {showForm && (
-        <EmployeeForm
-          onSubmit={handleFormSubmit}
-          onCancel={handleFormCancel}
-          initialData={editingEmployee}
-          isLoading={isSubmitting}
-        />
+        <div ref={formRef}>
+          <EmployeeForm
+            onSubmit={handleFormSubmit}
+            onCancel={handleFormCancel}
+            initialData={editingEmployee}
+            isLoading={isSubmitting}
+          />
+        </div>
       )}
 
       {viewMode === 'table' && (

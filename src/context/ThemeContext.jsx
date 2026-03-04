@@ -7,32 +7,36 @@ const ThemeContext = createContext({
 });
 
 const THEME_KEY = 'app-theme';
+const THEME_RESET_KEY = 'app-theme-reset';
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState('light');
 
-  const applyTheme = (nextTheme) => {
-    const root = document.documentElement;
-    root.classList.toggle('dark', nextTheme === 'dark');
-    localStorage.setItem(THEME_KEY, nextTheme);
-    setTheme(nextTheme);
-  };
-
   useEffect(() => {
+    if (!localStorage.getItem(THEME_RESET_KEY)) {
+      localStorage.removeItem(THEME_KEY);
+      localStorage.setItem(THEME_RESET_KEY, '1');
+    }
     const stored = localStorage.getItem(THEME_KEY);
     if (stored === 'light' || stored === 'dark') {
-      applyTheme(stored);
+      setTheme(stored);
       return;
     }
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(prefersDark ? 'dark' : 'light');
+    setTheme(prefersDark ? 'dark' : 'light');
   }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem(THEME_KEY, theme);
+  }, [theme]);
 
   const value = useMemo(
     () => ({
       theme,
-      setTheme: applyTheme,
-      toggleTheme: () => applyTheme(theme === 'dark' ? 'light' : 'dark')
+      setTheme,
+      toggleTheme: () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
     }),
     [theme]
   );

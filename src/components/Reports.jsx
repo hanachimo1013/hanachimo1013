@@ -248,7 +248,7 @@ export default function Reports() {
       {!selectedReport ? (
         <>
           {/* Report Selection Grid */}
-          <div className="grid grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 sm:gap-6">
             <div 
               onClick={() => setSelectedReport('insurance')}
               className="border-2 border-gray-200 rounded-lg p-6 hover:border-[#d97706] hover:shadow-lg transition-all cursor-pointer flex flex-col text-center dark:border-gray-700 dark:bg-gray-800"
