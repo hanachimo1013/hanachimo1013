@@ -1,7 +1,13 @@
 import { getSupabaseAdmin, parseJsonBody, signJwt, verifyPassword } from '../_lib/auth.js';
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Allow', 'POST, OPTIONS');
+    return res.status(204).end();
+  }
+
+  if ((req.method || '').toUpperCase() !== 'POST') {
+    res.setHeader('Allow', 'POST, OPTIONS');
     return res.status(405).json({ message: 'Method not allowed.' });
   }
 
