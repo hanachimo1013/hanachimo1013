@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useEmployees } from '../hooks/useEmployees';
 import EmployeeCard from './EmployeeCard';
 import { formatPeso, getEeShare, getErShare, getPhotoUrl } from '../utils/formatters';
@@ -316,7 +316,28 @@ export default function Employees() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [viewMode, setViewMode] = useState('table');
+  const [sortMode, setSortMode] = useState('alpha');
+  const [sortDir, setSortDir] = useState('asc');
   const formRef = useRef(null);
+  
+  const sortedEmployees = useMemo(() => {
+    const list = Array.isArray(employees) ? [...employees] : [];
+    const direction = sortDir === 'asc' ? 1 : -1;
+
+    if (sortMode === 'alpha') {
+      return list.sort((a, b) => {
+        const nameA = (a?.name || '').toLowerCase();
+        const nameB = (b?.name || '').toLowerCase();
+        return nameA.localeCompare(nameB) * direction;
+      });
+    }
+
+    return list.sort((a, b) => {
+      const numberA = Number(a?.id || 0);
+      const numberB = Number(b?.id || 0);
+      return (numberA - numberB) * direction;
+    });
+  }, [employees, sortDir, sortMode]);
 
   const handleFormSubmit = async (formData) => {
     setIsSubmitting(true);
@@ -374,7 +395,7 @@ export default function Employees() {
       )}
 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setViewMode('table')}
             className={`px-4 py-2 rounded-lg font-semibold transition-all ${
@@ -396,6 +417,35 @@ export default function Employees() {
           >
             <i className="bi bi-grid-3x3-gap mr-2" aria-hidden="true" />
             Card View
+          </button>
+          <button
+            onClick={() => setSortMode('alpha')}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              sortMode === 'alpha'
+                ? 'bg-[#f59e0b] text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            <i className="bi bi-sort-alpha-down mr-2" aria-hidden="true" />
+            Alphabetical
+          </button>
+          <button
+            onClick={() => setSortMode('number')}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              sortMode === 'number'
+                ? 'bg-[#f59e0b] text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            <i className="bi bi-sort-numeric-down mr-2" aria-hidden="true" />
+            Number
+          </button>
+          <button
+            onClick={() => setSortDir((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
+            className="px-4 py-2 rounded-lg font-semibold transition-all bg-gray-200 text-gray-700 hover:bg-gray-300"
+          >
+            <i className={`bi ${sortDir === 'asc' ? 'bi-sort-down' : 'bi-sort-up'} mr-2`} aria-hidden="true" />
+            {sortDir === 'asc' ? 'Asc' : 'Desc'}
           </button>
         </div>
 
@@ -435,7 +485,7 @@ export default function Employees() {
         <div className="overflow-y-auto flex-1 relative">
           {loading && <LoadingOverlay message="Loading employees..." />}
           <EmployeeTable
-            employees={employees}
+            employees={sortedEmployees}
             loading={loading}
             onEdit={handleEdit}
             onDelete={handleDelete}
@@ -450,13 +500,13 @@ export default function Employees() {
             <div className="flex items-center justify-center py-12">
               <p className="text-gray-600 dark:text-gray-300">Loading employees...</p>
             </div>
-          ) : !employees || employees.length === 0 ? (
+          ) : !sortedEmployees || sortedEmployees.length === 0 ? (
             <div className="flex items-center justify-center py-12">
               <p className="text-gray-600 dark:text-gray-300">No employees found</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {employees.map((emp) => (
+              {sortedEmployees.map((emp) => (
                 <EmployeeCard
                   key={emp.id}
                   employee={emp}
