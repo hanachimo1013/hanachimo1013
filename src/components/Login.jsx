@@ -12,6 +12,7 @@ export default function Login() {
   const [error, setError] = useState('');
 
   const fromPath = location.state?.from?.pathname || '/dashboard';
+  const showAccessWarning = Boolean(location.state?.from);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -38,6 +39,12 @@ export default function Login() {
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
             Sign in to continue.
           </p>
+
+          {showAccessWarning && (
+            <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-600/50 dark:bg-amber-900/30 dark:text-amber-100">
+              You attempted to access a protected page. Please log in or contact the IT admin (hanachimo1013) for access.
+            </div>
+          )}
 
           <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
             <div>
