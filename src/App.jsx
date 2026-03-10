@@ -62,7 +62,7 @@ export default function App() {
         <Route
           path="/settings"
           element={
-            <ProtectedRoute allowedRoles={['superadmin']}>
+            <ProtectedRoute allowedRoles={['superadmin', 'viewer']}>
               <Layout>
                 <Settings />
               </Layout>
@@ -72,7 +72,7 @@ export default function App() {
         <Route
           path="/reports"
           element={
-            <ProtectedRoute allowedRoles={['superadmin']}>
+            <ProtectedRoute allowedRoles={['superadmin', 'viewer']}>
               <Layout>
                 <Reports />
               </Layout>

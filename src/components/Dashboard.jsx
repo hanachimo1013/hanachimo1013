@@ -4,6 +4,7 @@ import { useEmployees } from '../hooks/useEmployees';
 import EmployeeCard from './EmployeeCard';
 import { formatPeso, getEeShare, getErShare } from '../utils/formatters';
 import LoadingOverlay from './LoadingOverlay';
+import { useAuth } from '../context/AuthContext';
 
 const StatusCard = ({ title, value }) => (
   <div className="bg-[#f2dede] p-4 md:p-6 rounded shadow-md flex flex-col items-center justify-center min-h-32 md:h-40 hover:shadow-lg transition-shadow dark:bg-gray-800">
@@ -14,10 +15,11 @@ const StatusCard = ({ title, value }) => (
 
 
 // Function to generate PDF receipt for employer share
-const generateEmployerReceipt = (employee) => {
+const generateEmployerReceipt = (employee, masked) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
+  const maskedText = '***';
   
   // Header
   doc.setFontSize(18);
@@ -44,8 +46,8 @@ const generateEmployerReceipt = (employee) => {
   
   doc.setFont(undefined, 'normal');
   doc.setFontSize(10);
-  doc.text(`Employee ID: ${employee.id}`, 20, 78);
-  doc.text(`Employee Name: ${employee.name}`, 20, 85);
+  doc.text(`Employee ID: ${masked ? maskedText : employee.id}`, 20, 78);
+  doc.text(`Employee Name: ${masked ? maskedText : employee.name}`, 20, 85);
   
   // Divider
   doc.line(20, 92, pageWidth - 20, 92);
@@ -64,10 +66,10 @@ const generateEmployerReceipt = (employee) => {
   // Table content
   doc.setFont(undefined, 'normal');
   doc.text('Employee Share (EE)', 20, 125);
-  doc.text(formatPeso(getEeShare(employee)), pageWidth - 40, 125, { align: 'right' });
+  doc.text(masked ? maskedText : formatPeso(getEeShare(employee)), pageWidth - 40, 125, { align: 'right' });
   
   doc.text('Employer Share (ER)', 20, 135);
-  doc.text(formatPeso(getErShare(employee)), pageWidth - 40, 135, { align: 'right' });
+  doc.text(masked ? maskedText : formatPeso(getErShare(employee)), pageWidth - 40, 135, { align: 'right' });
   
   // Divider
   doc.setDrawColor(100);
@@ -77,7 +79,7 @@ const generateEmployerReceipt = (employee) => {
   doc.setFont(undefined, 'bold');
   doc.setFontSize(11);
   doc.text('Total Employer Share', 20, 152);
-  doc.text(formatPeso(getErShare(employee)), pageWidth - 40, 152, { align: 'right' });
+  doc.text(masked ? maskedText : formatPeso(getErShare(employee)), pageWidth - 40, 152, { align: 'right' });
   
   // Footer
   doc.setFontSize(9);
@@ -90,7 +92,7 @@ const generateEmployerReceipt = (employee) => {
 };
 
 // Employee Table Component
-const EmployeeTable = ({ employees, loading }) => {
+const EmployeeTable = ({ employees, loading, isViewer }) => {
   if (loading) {
     return <div className="text-center py-8 text-gray-500 dark:text-gray-300">Loading employee data...</div>;
   }
@@ -114,14 +116,16 @@ const EmployeeTable = ({ employees, loading }) => {
         <tbody>
           {employees.map((emp) => (
             <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors dark:border-gray-700 dark:hover:bg-gray-800/60">
-              <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-100">{emp.name}</td>
-              <td className="px-4 py-3 font-semibold text-[#10b981]">{formatPeso(getEeShare(emp))}</td>
-              <td className="px-4 py-3 font-semibold text-[#3b82f6]">{formatPeso(getErShare(emp))}</td>
-              <td className="px-4 py-3 font-bold text-[#dc2626]">{formatPeso(getEeShare(emp) + getErShare(emp))}</td>
+              <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-100">{isViewer ? '***' : emp.name}</td>
+              <td className="px-4 py-3 font-semibold text-[#10b981]">{isViewer ? '***' : formatPeso(getEeShare(emp))}</td>
+              <td className="px-4 py-3 font-semibold text-[#3b82f6]">{isViewer ? '***' : formatPeso(getErShare(emp))}</td>
+              <td className="px-4 py-3 font-bold text-[#dc2626]">{isViewer ? '***' : formatPeso(getEeShare(emp) + getErShare(emp))}</td>
               <td className="px-4 py-3 text-center">
                 <button
-                  onClick={() => generateEmployerReceipt(emp)}
-                  className="bg-[#10b981] hover:bg-[#059669] text-white px-3 py-1 rounded font-semibold transition-colors text-xs"
+                  onClick={() => generateEmployerReceipt(emp, isViewer)}
+                  disabled={isViewer}
+                  title={isViewer ? 'You are in viewing mode' : undefined}
+                  className="bg-[#10b981] hover:bg-[#059669] text-white px-3 py-1 rounded font-semibold transition-colors text-xs disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <i className="bi bi-receipt mr-1" aria-hidden="true" />
                   Receipt
@@ -136,6 +140,8 @@ const EmployeeTable = ({ employees, loading }) => {
 };
 
 export default function Dashboard() {
+  const { user } = useAuth();
+  const isViewer = user?.role === 'viewer';
   const { employees, loading } = useEmployees();
   const [viewMode, setViewMode] = useState('table'); // 'table' or 'grid'
 
@@ -162,8 +168,8 @@ export default function Dashboard() {
 
       {/* Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        <StatusCard title="Total EE Share" value={formatPeso(totals.eeShare)}/>
-        <StatusCard title="Total ER Share" value={formatPeso(totals.erShare)}/>
+        <StatusCard title="Total EE Share" value={isViewer ? '***' : formatPeso(totals.eeShare)}/>
+        <StatusCard title="Total ER Share" value={isViewer ? '***' : formatPeso(totals.erShare)}/>
       </div>
 
       {/* Employee List */}
@@ -203,7 +209,7 @@ export default function Dashboard() {
           {loading && <LoadingOverlay message="Loading employees..." />}
 
           {/* Table View */}
-          {viewMode === 'table' && <EmployeeTable employees={employees} loading={loading} />}
+          {viewMode === 'table' && <EmployeeTable employees={employees} loading={loading} isViewer={isViewer} />}
 
           {/* Grid View */}
           {viewMode === 'grid' && (
@@ -216,7 +222,12 @@ export default function Dashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {employees.map(emp => (
                     <div key={emp.id}>
-                      <EmployeeCard employee={emp} />
+                      <EmployeeCard
+                        employee={emp}
+                        isViewer={isViewer}
+                        maskText={() => '***'}
+                        maskNumber={() => '***'}
+                      />
                     </div>
                   ))}
                 </div>
