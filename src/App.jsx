@@ -9,6 +9,7 @@ import NotFound from './components/NotFound';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicOnlyRoute from './components/PublicOnlyRoute';
+import HanachimoProfile from './components/HanachimoProfile';
 
 const routeTitles = {
   '/dashboard': 'Dashboard',
@@ -16,6 +17,7 @@ const routeTitles = {
   '/settings': 'Settings',
   '/reports': 'Reports',
   '/login': 'Login',
+  '/hanachimo': 'Hanachimo',
 };
 
 function TitleUpdater() {
@@ -86,6 +88,7 @@ export default function App() {
             </PublicOnlyRoute>
           }
         />
+        <Route path="/hanachimo" element={<HanachimoProfile />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
