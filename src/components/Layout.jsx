@@ -129,7 +129,7 @@ export default function Layout({ children }) {
         <aside
           className={`fixed md:sticky left-1/2 md:left-0 top-20 md:top-0 -translate-x-1/2 md:translate-x-0 w-80 md:w-72 bg-[#e9dcc9]/90 md:bg-[#e9dcc9] backdrop-blur-md md:backdrop-blur-none p-6 flex flex-col items-center rounded-lg md:rounded-none shadow-2xl md:shadow-lg overflow-y-auto border-4 md:border-r-4 md:border-b-0 border-[#bc7676] z-40 transition-all duration-300 max-h-[calc(100vh-140px)] md:max-h-[calc(100vh-0px)] md:h-[calc(100vh-0px)] md:border-b-0 dark:bg-gray-800 dark:border-gray-700 ${
             sidebarOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
-          } ${sidebarVisible ? 'md:translate-y-0 md:opacity-100 md:pointer-events-auto' : 'md:-translate-x-full md:opacity-0 md:pointer-events-none'}`}
+          } ${sidebarVisible ? 'md:translate-y-0 md:opacity-100 md:pointer-events-auto' : 'md:w-0 md:p-0 md:border-0 md:shadow-none md:opacity-0 md:pointer-events-none'}`}
         >
           <div className="w-24 h-24 rounded-full mb-4 shadow-lg overflow-hidden flex items-center justify-center flex-shrink-0 border-2 border-white/30">
             <img
