@@ -105,7 +105,7 @@ export default function Layout({ children }) {
         </div>
       </header>
 
-      <div className="flex flex-1 w-screen overflow-hidden gap-0 pt-20 md:pt-0">
+      <div className="flex flex-1 w-screen overflow-x-hidden gap-0 pt-20 md:pt-0">
         {/* Mobile Sidebar Overlay - Glass Effect */}
         {sidebarOpen && (
           <div
