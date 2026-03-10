@@ -89,21 +89,19 @@ export default function Login() {
             <button
               type="submit"
               disabled={submitting}
-              className="mt-2 w-full rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-400"
             >
-              {submitting ? 'Signing in...' : 'Sign In'}
-            </button>
-
-            {submitting && (
-              <div className="flex justify-center pt-2">
-                <div className="google-dots" aria-label="Signing in">
+              {submitting ? (
+                <div className="google-dots google-dots--button" aria-label="Signing in">
                   <span />
                   <span />
                   <span />
                   <span />
                 </div>
-              </div>
-            )}
+              ) : (
+                'Sign In'
+              )}
+            </button>
           </form>
         </section>
       </main>

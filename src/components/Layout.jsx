@@ -28,6 +28,7 @@ const SidebarBtn = ({ to, text, icon, onClick }) => {
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -40,10 +41,15 @@ export default function Layout({ children }) {
   };
 
   const handleLogout = () => {
-    logout();
-    closeSidebar();
-    setLogoutOpen(false);
-    navigate('/login', { replace: true });
+    if (loggingOut) return;
+    setLoggingOut(true);
+    setTimeout(() => {
+      logout();
+      closeSidebar();
+      setLogoutOpen(false);
+      setLoggingOut(false);
+      navigate('/login', { replace: true });
+    }, 350);
   };
 
   const openLogout = () => {
@@ -56,6 +62,7 @@ export default function Layout({ children }) {
         open={logoutOpen}
         onCancel={() => setLogoutOpen(false)}
         onConfirm={handleLogout}
+        busy={loggingOut}
       />
       {/* Header Section - Floating on Mobile */}
       <header className="flex justify-between items-center px-4 md:px-8 py-4 bg-[#f2dede] border-b-4 border-[#bc7676] shadow-md fixed md:static w-full top-0 z-50 dark:bg-gray-800 dark:border-gray-700">
