@@ -81,7 +81,7 @@ export default function Layout({ children }) {
         busy={loggingOut}
       />
       {/* Header Section - Floating on Mobile */}
-      <header className="flex justify-between items-center px-4 md:px-8 py-4 bg-[#f2dede] border-b-4 border-[#bc7676] shadow-md fixed md:static w-full top-0 z-50 dark:bg-gray-800 dark:border-gray-700">
+      <header className="flex justify-between items-center px-4 md:px-8 py-4 bg-[#f2dede] border-b-4 border-[#bc7676] shadow-md fixed md:sticky w-full top-0 z-50 dark:bg-gray-800 dark:border-gray-700">
         <h1 className="text-2xl md:text-4xl font-black tracking-tight text-gray-900 dark:text-gray-100">
           <span className="md:hidden">BDLAG Utility</span>
           <span className="hidden md:inline">Bato de Luna Art Gallery</span>
@@ -116,7 +116,7 @@ export default function Layout({ children }) {
 
         {/* Sidebar Section - Centered Dropdown on Mobile */}
         <aside
-          className={`fixed md:static left-1/2 md:left-0 top-20 md:top-auto -translate-x-1/2 md:translate-x-0 w-80 md:w-72 bg-[#e9dcc9]/90 md:bg-[#e9dcc9] backdrop-blur-md md:backdrop-blur-none p-6 flex flex-col items-center rounded-lg md:rounded-none shadow-2xl md:shadow-lg overflow-y-auto border-4 md:border-r-4 md:border-b-0 border-[#bc7676] z-40 transition-all duration-300 max-h-[calc(100vh-140px)] md:max-h-none md:h-auto md:border-b-0 dark:bg-gray-800 dark:border-gray-700 ${
+          className={`fixed md:sticky left-1/2 md:left-0 top-20 md:top-0 -translate-x-1/2 md:translate-x-0 w-80 md:w-72 bg-[#e9dcc9]/90 md:bg-[#e9dcc9] backdrop-blur-md md:backdrop-blur-none p-6 flex flex-col items-center rounded-lg md:rounded-none shadow-2xl md:shadow-lg overflow-y-auto border-4 md:border-r-4 md:border-b-0 border-[#bc7676] z-40 transition-all duration-300 max-h-[calc(100vh-140px)] md:max-h-[calc(100vh-0px)] md:h-[calc(100vh-0px)] md:border-b-0 dark:bg-gray-800 dark:border-gray-700 ${
             sidebarOpen ? 'translate-y-0 opacity-100' : '-translate-y-full md:translate-y-0 opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto'
           }`}
         >
