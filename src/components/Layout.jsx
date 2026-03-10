@@ -38,6 +38,14 @@ const SidebarBtn = ({ to, text, icon, onClick, disabled, title }) => {
   );
 };
 
+const SidebarIconBtn = ({ to, icon, onClick, title }) => (
+  <Link to={to} onClick={onClick} title={title}>
+    <button className="w-12 h-12 rounded-xl mb-3 flex items-center justify-center bg-[#d97706] hover:bg-[#b45309] text-white shadow-md transition-all">
+      {icon}
+    </button>
+  </Link>
+);
+
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -109,7 +117,7 @@ export default function Layout({ children }) {
             onClick={toggleDesktopSidebar}
             className="hidden md:block px-4 py-2 hover:bg-[#e6a891] rounded transition-colors dark:hover:bg-gray-700"
           >
-            {sidebarVisible ? 'Hide Menu' : 'Show Menu'}
+            {sidebarVisible ? 'Hide Sidebar' : 'Show Sidebar'}
           </button>
           <button className="hidden md:block px-4 py-2 hover:bg-[#e6a891] rounded transition-colors dark:hover:bg-gray-700">Contact</button>
           <button onClick={openLogout} className="hidden md:block px-4 py-2 hover:bg-[#d59780] rounded transition-colors dark:hover:bg-gray-700">Log-Out</button>
@@ -120,7 +128,7 @@ export default function Layout({ children }) {
         className="flex-1 w-screen overflow-hidden pt-20 md:pt-0"
         style={{ height: 'calc(100vh - 80px)' }}
       >
-        <div className={`h-full overflow-x-hidden md:grid ${sidebarVisible ? 'md:grid-cols-[18rem_minmax(0,1fr)]' : 'md:grid-cols-1'}`}>
+        <div className={`h-full overflow-x-hidden md:grid ${sidebarVisible ? 'md:grid-cols-[18rem_minmax(0,1fr)]' : 'md:grid-cols-[4rem_minmax(0,1fr)]'}`}>
         {/* Mobile Sidebar Overlay - Glass Effect */}
         {sidebarOpen && (
           <div
@@ -142,7 +150,7 @@ export default function Layout({ children }) {
               className="w-full h-full object-cover"
             />
           </div>
-          <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">ã¯ãªã¡ã‚‚-ç®¡ç†è€…</h2>
+          <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">????-???</h2>
           <p className="text-xs text-gray-600 mb-8 dark:text-gray-300">System Administrator</p>
           
           <div className="w-full flex-1">
@@ -179,7 +187,7 @@ export default function Layout({ children }) {
         </aside>
 
         {/* Sidebar Section - Desktop */}
-        {sidebarVisible && (
+        {sidebarVisible ? (
           <aside className="hidden md:flex md:sticky md:top-4 w-72 bg-[#e9dcc9] p-6 flex-col items-center shadow-lg overflow-y-auto border-r-4 border-[#bc7676] dark:bg-gray-800 dark:border-gray-700 max-h-[calc(100vh-120px)]">
           <div className="w-24 h-24 rounded-full mb-4 shadow-lg overflow-hidden flex items-center justify-center flex-shrink-0 border-2 border-white/30">
             <img
@@ -188,7 +196,7 @@ export default function Layout({ children }) {
               className="w-full h-full object-cover"
             />
           </div>
-          <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">はなちも-管理者</h2>
+          <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">????-???</h2>
           <p className="text-xs text-gray-600 mb-8 dark:text-gray-300">System Administrator</p>
           
           <div className="w-full flex-1">
@@ -223,6 +231,20 @@ export default function Layout({ children }) {
             c.2026
           </div>
         </aside>
+        ) : (
+          <aside className="hidden md:flex md:sticky md:top-4 w-16 bg-[#e9dcc9] p-2 flex-col items-center shadow-lg border-r-4 border-[#bc7676] dark:bg-gray-800 dark:border-gray-700 max-h-[calc(100vh-120px)]">
+            <SidebarIconBtn to="/dashboard" icon={<i className="bi bi-speedometer2" />} onClick={closeSidebar} title="Dashboard" />
+            <SidebarIconBtn to="/employees" icon={<i className="bi bi-people-fill" />} onClick={closeSidebar} title="Employees" />
+            {!isEmployee && (
+              <SidebarIconBtn to="/settings" icon={<i className="bi bi-gear-fill" />} onClick={closeSidebar} title={isViewer ? 'You are in viewing mode' : 'Settings'} />
+            )}
+            {!isEmployee && (
+              <SidebarIconBtn to="/reports" icon={<i className="bi bi-bar-chart-fill" />} onClick={closeSidebar} title="Reports" />
+            )}
+            <button onClick={openLogout} title="Logout" className="w-12 h-12 rounded-xl mt-auto flex items-center justify-center bg-[#dc2626] hover:bg-[#b91c1c] text-white shadow-md transition-all">
+              <i className="bi bi-box-arrow-right" aria-hidden="true" />
+            </button>
+          </aside>
         )}
 
         {/* Main Content Area */}
@@ -234,3 +256,4 @@ export default function Layout({ children }) {
     </div>
   );
 }
+
