@@ -93,6 +93,17 @@ export default function Login() {
             >
               {submitting ? 'Signing in...' : 'Sign In'}
             </button>
+
+            {submitting && (
+              <div className="flex justify-center pt-2">
+                <div className="google-dots" aria-label="Signing in">
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </div>
+            )}
           </form>
         </section>
       </main>

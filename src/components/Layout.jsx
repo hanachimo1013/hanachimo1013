@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import adminAvatar from '../assets/admin-avatar.png';
 import { useAuth } from '../context/AuthContext';
+import ConfirmLogoutModal from './ConfirmLogoutModal';
 
 const SidebarBtn = ({ to, text, icon, onClick }) => {
   const location = useLocation();
@@ -26,6 +27,7 @@ const SidebarBtn = ({ to, text, icon, onClick }) => {
 
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -40,11 +42,21 @@ export default function Layout({ children }) {
   const handleLogout = () => {
     logout();
     closeSidebar();
+    setLogoutOpen(false);
     navigate('/login', { replace: true });
+  };
+
+  const openLogout = () => {
+    setLogoutOpen(true);
   };
 
   return (
     <div className="flex flex-col w-screen min-h-screen bg-white font-sans text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+      <ConfirmLogoutModal
+        open={logoutOpen}
+        onCancel={() => setLogoutOpen(false)}
+        onConfirm={handleLogout}
+      />
       {/* Header Section - Floating on Mobile */}
       <header className="flex justify-between items-center px-4 md:px-8 py-4 bg-[#f2dede] border-b-4 border-[#bc7676] shadow-md fixed md:static w-full top-0 z-50 dark:bg-gray-800 dark:border-gray-700">
         <h1 className="text-2xl md:text-4xl font-black tracking-tight text-gray-900 dark:text-gray-100">
@@ -66,7 +78,7 @@ export default function Layout({ children }) {
 
           {/* Desktop Menu Items */}
           <button className="hidden md:block px-4 py-2 hover:bg-[#e6a891] rounded transition-colors dark:hover:bg-gray-700">Contact</button>
-          <button onClick={handleLogout} className="hidden md:block px-4 py-2 hover:bg-[#d59780] rounded transition-colors dark:hover:bg-gray-700">Log-Out</button>
+          <button onClick={openLogout} className="hidden md:block px-4 py-2 hover:bg-[#d59780] rounded transition-colors dark:hover:bg-gray-700">Log-Out</button>
         </div>
       </header>
 
@@ -100,7 +112,7 @@ export default function Layout({ children }) {
             <SidebarBtn to="/employees" text="Employees" icon={<i className="bi bi-people-fill" />} onClick={closeSidebar} />
             <SidebarBtn to="/settings" text="Settings" icon={<i className="bi bi-gear-fill" />} onClick={closeSidebar} />
             <SidebarBtn to="/reports" text="Reports" icon={<i className="bi bi-bar-chart-fill" />} onClick={closeSidebar} />
-          <button onClick={handleLogout} className="w-full py-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg shadow-md mt-auto flex-shrink-0 font-semibold transition-all hover:shadow-lg">
+          <button onClick={openLogout} className="w-full py-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg shadow-md mt-auto flex-shrink-0 font-semibold transition-all hover:shadow-lg">
             <i className="bi bi-box-arrow-right mr-2" aria-hidden="true" />
             Logout
           </button>
