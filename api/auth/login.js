@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     const supabaseAdmin = getSupabaseAdmin();
     const { data: user, error } = await supabaseAdmin
       .from('app_users')
-      .select('id, username, password_hash, role')
+      .select('id, username, user_name, password_hash, role')
       .eq('username', userid)
       .maybeSingle();
 
@@ -47,6 +47,7 @@ export default async function handler(req, res) {
       user: {
         id: user.id,
         username: user.username,
+        name: user.user_name || user.username,
         role: user.role,
       },
     });

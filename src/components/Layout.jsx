@@ -56,6 +56,8 @@ export default function Layout({ children }) {
   const isSuperAdmin = user?.role === 'superadmin';
   const isViewer = user?.role === 'viewer';
   const isEmployee = user?.role === 'employee';
+  const displayName = user?.name || user?.username || 'User';
+  const displayRole = user?.role ? user.role.toUpperCase() : 'USER';
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -150,8 +152,7 @@ export default function Layout({ children }) {
               className="w-full h-full object-cover"
             />
           </div>
-          <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">????-???</h2>
-          <p className="text-xs text-gray-600 mb-8 dark:text-gray-300">System Administrator</p>
+          <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">{displayName}</h2>\n          <p className="text-xs text-gray-600 mb-8 dark:text-gray-300">{displayRole}</p>
           
           <div className="w-full flex-1">
             <SidebarBtn to="/dashboard" text="Dashboard" icon={<i className="bi bi-speedometer2" />} onClick={closeSidebar} />
@@ -196,8 +197,7 @@ export default function Layout({ children }) {
               className="w-full h-full object-cover"
             />
           </div>
-          <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">????-???</h2>
-          <p className="text-xs text-gray-600 mb-8 dark:text-gray-300">System Administrator</p>
+          <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">{displayName}</h2>\n          <p className="text-xs text-gray-600 mb-8 dark:text-gray-300">{displayRole}</p>
           
           <div className="w-full flex-1">
             <SidebarBtn to="/dashboard" text="Dashboard" icon={<i className="bi bi-speedometer2" />} onClick={closeSidebar} />
@@ -256,4 +256,5 @@ export default function Layout({ children }) {
     </div>
   );
 }
+
 

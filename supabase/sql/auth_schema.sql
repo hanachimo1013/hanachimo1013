@@ -2,6 +2,7 @@
 create table if not exists public.app_users (
   id bigint generated always as identity primary key,
   username text not null unique,
+  user_name text,
   password_hash text not null,
   role text not null check (role in ('superadmin', 'employee', 'viewer')),
   created_at timestamptz not null default now(),

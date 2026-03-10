@@ -16,6 +16,7 @@ export default async function handler(req, res) {
       user: {
         id: payload.sub,
         username: payload.username,
+        name: payload.name || payload.username,
         role: payload.role,
       },
     });

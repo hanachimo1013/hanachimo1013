@@ -36,6 +36,7 @@ function createToken(user) {
     {
       sub: String(user.id),
       username: user.username,
+      name: user.user_name || user.name || user.username,
       role: user.role,
     },
     JWT_SECRET,
@@ -116,7 +117,7 @@ app.post('/api/auth/login', async (req, res) => {
 
     const { data: user, error } = await supabaseAdmin
       .from('app_users')
-      .select('id, username, password_hash, role')
+      .select('id, username, user_name, password_hash, role')
       .eq('username', userid)
       .maybeSingle();
 
@@ -140,6 +141,7 @@ app.post('/api/auth/login', async (req, res) => {
       user: {
         id: user.id,
         username: user.username,
+        name: user.user_name || user.username,
         role: user.role,
       },
     });
@@ -154,6 +156,7 @@ app.get('/api/auth/me', requireAuth, (req, res) => {
     user: {
       id: req.user.sub,
       username: req.user.username,
+      name: req.user.name || req.user.username,
       role: req.user.role,
     },
   });

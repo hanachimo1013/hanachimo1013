@@ -28,6 +28,7 @@ export function signJwt(user) {
     {
       sub: String(user.id),
       username: user.username,
+      name: user.user_name || user.name || user.username,
       role: user.role,
     },
     secret,
