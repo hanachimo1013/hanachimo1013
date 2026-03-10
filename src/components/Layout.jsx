@@ -78,7 +78,7 @@ export default function Layout({ children }) {
   };
 
   return (
-    <div className="flex flex-col w-screen min-h-screen bg-white font-sans text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+    <div className="flex flex-col w-screen h-screen bg-white font-sans text-gray-900 dark:bg-gray-900 dark:text-gray-100">
       <ConfirmLogoutModal
         open={logoutOpen}
         onCancel={() => setLogoutOpen(false)}
@@ -116,7 +116,11 @@ export default function Layout({ children }) {
         </div>
       </header>
 
-      <div className={`flex-1 w-screen overflow-x-hidden gap-0 pt-20 md:pt-0 md:grid ${sidebarVisible ? 'md:grid-cols-[18rem_minmax(0,1fr)]' : 'md:grid-cols-1'}`}>
+      <div
+        className="flex-1 w-screen overflow-hidden pt-20 md:pt-0"
+        style={{ height: 'calc(100vh - 80px)' }}
+      >
+        <div className={`h-full overflow-x-hidden md:grid ${sidebarVisible ? 'md:grid-cols-[18rem_minmax(0,1fr)]' : 'md:grid-cols-1'}`}>
         {/* Mobile Sidebar Overlay - Glass Effect */}
         {sidebarOpen && (
           <div
@@ -176,7 +180,7 @@ export default function Layout({ children }) {
 
         {/* Sidebar Section - Desktop */}
         {sidebarVisible && (
-          <aside className="hidden md:flex md:sticky md:top-24 w-72 bg-[#e9dcc9] p-6 flex-col items-center shadow-lg overflow-y-auto border-r-4 border-[#bc7676] dark:bg-gray-800 dark:border-gray-700 h-[calc(100vh-96px)]">
+          <aside className="hidden md:flex md:sticky md:top-4 w-72 bg-[#e9dcc9] p-6 flex-col items-center shadow-lg overflow-y-auto border-r-4 border-[#bc7676] dark:bg-gray-800 dark:border-gray-700 max-h-[calc(100vh-120px)]">
           <div className="w-24 h-24 rounded-full mb-4 shadow-lg overflow-hidden flex items-center justify-center flex-shrink-0 border-2 border-white/30">
             <img
               src={adminAvatar}
@@ -225,6 +229,7 @@ export default function Layout({ children }) {
         <main className="flex-1 flex flex-col p-4 md:p-8 gap-4 md:gap-8 bg-gray-50 w-full dark:bg-gray-900 overflow-y-auto">
           {children}
         </main>
+        </div>
       </div>
     </div>
   );
