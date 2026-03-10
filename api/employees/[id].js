@@ -40,6 +40,9 @@ export default async function handler(req, res) {
   const supabaseAdmin = getSupabaseAdmin();
 
   if (req.method === 'PATCH') {
+    if (user.role === 'viewer') {
+      return res.status(403).json({ message: 'Viewer role is read-only.' });
+    }
     const body = parseJsonBody(req);
     const updateData = toDbEmployee(body);
 
@@ -63,6 +66,9 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'DELETE') {
+    if (user.role === 'viewer') {
+      return res.status(403).json({ message: 'Viewer role is read-only.' });
+    }
     const { error } = await supabaseAdmin
       .from('employees')
       .delete()

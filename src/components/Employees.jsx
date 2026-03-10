@@ -3,6 +3,7 @@ import { useEmployees } from '../hooks/useEmployees';
 import EmployeeCard from './EmployeeCard';
 import { formatPeso, getEeShare, getErShare, getPhotoUrl } from '../utils/formatters';
 import LoadingOverlay from './LoadingOverlay';
+import { useAuth } from '../context/AuthContext';
 
 const EmployeeForm = ({ onSubmit, onCancel, initialData = null, isLoading = false }) => {
   const [formData, setFormData] = useState(
@@ -278,24 +279,40 @@ const EmployeeTable = ({ employees, loading, onEdit, onDelete }) => {
                   </div>
                 )}
               </td>
-              <td className="px-2 md:px-4 py-3 font-medium text-gray-800 dark:text-gray-100">{emp.name}</td>
-              <td className="px-2 md:px-4 py-3 text-gray-700 text-xs md:text-sm dark:text-gray-300">{emp.designation || '-'}</td>
-              <td className="px-2 md:px-4 py-3 text-gray-700 dark:text-gray-200">{formatPeso(emp.sss)}</td>
-              <td className="px-2 md:px-4 py-3 text-gray-700 dark:text-gray-200">{formatPeso(emp.pagibig)}</td>
-              <td className="hidden md:table-cell px-4 py-3 text-gray-700 dark:text-gray-200">{formatPeso(emp.philhealth)}</td>
-              <td className="px-2 md:px-4 py-3 text-[#10b981] font-semibold">{formatPeso(getEeShare(emp))}</td>
-              <td className="px-2 md:px-4 py-3 text-[#3b82f6] font-semibold">{formatPeso(getErShare(emp))}</td>
+              <td className="px-2 md:px-4 py-3 font-medium text-gray-800 dark:text-gray-100">
+                {emp.__maskedName ?? emp.name}
+              </td>
+              <td className="px-2 md:px-4 py-3 text-gray-700 text-xs md:text-sm dark:text-gray-300">
+                {emp.__maskedDesignation ?? (emp.designation || '-')}
+              </td>
+              <td className="px-2 md:px-4 py-3 text-gray-700 dark:text-gray-200">
+                {emp.__maskedNumber ?? formatPeso(emp.sss)}
+              </td>
+              <td className="px-2 md:px-4 py-3 text-gray-700 dark:text-gray-200">
+                {emp.__maskedNumber ?? formatPeso(emp.pagibig)}
+              </td>
+              <td className="hidden md:table-cell px-4 py-3 text-gray-700 dark:text-gray-200">
+                {emp.__maskedNumber ?? formatPeso(emp.philhealth)}
+              </td>
+              <td className="px-2 md:px-4 py-3 text-[#10b981] font-semibold">
+                {emp.__maskedNumber ?? formatPeso(getEeShare(emp))}
+              </td>
+              <td className="px-2 md:px-4 py-3 text-[#3b82f6] font-semibold">
+                {emp.__maskedNumber ?? formatPeso(getErShare(emp))}
+              </td>
               <td className="px-2 md:px-4 py-3 text-center">
                 <button
                   onClick={() => onEdit(emp)}
-                  className="px-2 py-1 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded text-xs font-semibold mr-2 transition-all"
+                  disabled={emp.__readOnly}
+                  className="px-2 py-1 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded text-xs font-semibold mr-2 transition-all disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <i className="bi bi-pencil-square mr-1" aria-hidden="true" />
                   Edit
                 </button>
                 <button
                   onClick={() => onDelete(emp.id)}
-                  className="px-2 py-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded text-xs font-semibold transition-all"
+                  disabled={emp.__readOnly}
+                  className="px-2 py-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded text-xs font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <i className="bi bi-trash mr-1" aria-hidden="true" />
                   Delete
@@ -310,6 +327,8 @@ const EmployeeTable = ({ employees, loading, onEdit, onDelete }) => {
 };
 
 export default function Employees() {
+  const { user } = useAuth();
+  const isViewer = user?.role === 'viewer';
   const { employees, loading, addEmployee, updateEmployee, deleteEmployee } = useEmployees();
   const [showForm, setShowForm] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
@@ -319,7 +338,15 @@ export default function Employees() {
   const [sortMode, setSortMode] = useState('alpha');
   const [sortDir, setSortDir] = useState('asc');
   const formRef = useRef(null);
-  
+
+  const maskText = (value) => {
+    const text = String(value || '');
+    if (text.length <= 2) return '*'.repeat(text.length);
+    return `${text.slice(0, 2)}${'*'.repeat(Math.max(1, text.length - 3))}${text.slice(-1)}`;
+  };
+
+  const maskNumber = () => '***';
+
   const sortedEmployees = useMemo(() => {
     const list = Array.isArray(employees) ? [...employees] : [];
     const direction = sortDir === 'asc' ? 1 : -1;
@@ -338,6 +365,17 @@ export default function Employees() {
       return (numberA - numberB) * direction;
     });
   }, [employees, sortDir, sortMode]);
+
+  const displayEmployees = useMemo(() => {
+    if (!isViewer) return sortedEmployees;
+    return sortedEmployees.map((emp) => ({
+      ...emp,
+      __maskedName: maskText(emp.name),
+      __maskedDesignation: maskText(emp.designation || '-'),
+      __maskedNumber: maskNumber(),
+      __readOnly: true,
+    }));
+  }, [isViewer, maskText, maskNumber, sortedEmployees]);
 
   const handleFormSubmit = async (formData) => {
     setIsSubmitting(true);
@@ -366,11 +404,13 @@ export default function Employees() {
   };
 
   const handleEdit = (employee) => {
+    if (isViewer) return;
     setEditingEmployee(employee);
     setShowForm(true);
   };
 
   const handleDelete = (employeeId) => {
+    if (isViewer) return;
     if (confirm('Are you sure you want to delete this employee?')) {
       deleteEmployee(employeeId);
     }
@@ -451,8 +491,9 @@ export default function Employees() {
 
         {!showForm && (
           <button
-            onClick={() => setShowForm(true)}
-            className="self-start md:self-auto px-6 py-2 bg-[#10b981] hover:bg-[#059669] text-white rounded-lg font-semibold transition-all"
+            onClick={() => (isViewer ? null : setShowForm(true))}
+            disabled={isViewer}
+            className="self-start md:self-auto px-6 py-2 bg-[#10b981] hover:bg-[#059669] text-white rounded-lg font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-60"
           >
             <i className="bi bi-person-plus mr-2" aria-hidden="true" />
             Add New Employee
@@ -485,7 +526,7 @@ export default function Employees() {
         <div className="overflow-y-auto flex-1 relative">
           {loading && <LoadingOverlay message="Loading employees..." />}
           <EmployeeTable
-            employees={sortedEmployees}
+            employees={displayEmployees}
             loading={loading}
             onEdit={handleEdit}
             onDelete={handleDelete}
@@ -500,16 +541,19 @@ export default function Employees() {
             <div className="flex items-center justify-center py-12">
               <p className="text-gray-600 dark:text-gray-300">Loading employees...</p>
             </div>
-          ) : !sortedEmployees || sortedEmployees.length === 0 ? (
+          ) : !displayEmployees || displayEmployees.length === 0 ? (
             <div className="flex items-center justify-center py-12">
               <p className="text-gray-600 dark:text-gray-300">No employees found</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sortedEmployees.map((emp) => (
+              {displayEmployees.map((emp) => (
                 <EmployeeCard
                   key={emp.id}
                   employee={emp}
+                  isViewer={isViewer}
+                  maskText={maskText}
+                  maskNumber={maskNumber}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                 />

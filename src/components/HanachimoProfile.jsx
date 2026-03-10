@@ -44,8 +44,7 @@ export default function HanachimoProfile() {
                 </div>
                 <p className="mt-1 text-sm text-white/60">@hanachimo1013</p>
                 <p className="mt-4 max-w-2xl text-base text-white/80">
-                  Product-focused developer building clean, secure, and maintainable web apps.
-                  This space highlights recent work and the systems I enjoy shipping.
+                  Product-centric developer dedicated to engineering clean, secure, and scalable web architectures. I leverage agentic AI workflows to accelerate development cycles, ensuring every project is delivered with high efficiency and maintainable code.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <a

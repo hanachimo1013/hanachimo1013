@@ -158,6 +158,9 @@ app.get('/api/employees', requireAuth, async (_req, res) => {
 });
 
 app.post('/api/employees', requireAuth, async (req, res) => {
+  if (req.user?.role === 'viewer') {
+    return res.status(403).json({ message: 'Viewer role is read-only.' });
+  }
   const newEmployee = toDbEmployee(req.body || {});
   if (!newEmployee.name) {
     return res.status(400).json({ message: 'Employee name is required.' });
@@ -178,6 +181,9 @@ app.post('/api/employees', requireAuth, async (req, res) => {
 });
 
 app.patch('/api/employees/:id', requireAuth, async (req, res) => {
+  if (req.user?.role === 'viewer') {
+    return res.status(403).json({ message: 'Viewer role is read-only.' });
+  }
   const id = Number(req.params.id);
   if (!id) {
     return res.status(400).json({ message: 'Invalid employee id.' });
@@ -204,6 +210,9 @@ app.patch('/api/employees/:id', requireAuth, async (req, res) => {
 });
 
 app.delete('/api/employees/:id', requireAuth, async (req, res) => {
+  if (req.user?.role === 'viewer') {
+    return res.status(403).json({ message: 'Viewer role is read-only.' });
+  }
   const id = Number(req.params.id);
   if (!id) {
     return res.status(400).json({ message: 'Invalid employee id.' });

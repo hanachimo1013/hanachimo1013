@@ -30,7 +30,8 @@ export default function Layout({ children }) {
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  const isSuperAdmin = user?.role === 'superadmin';
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -117,8 +118,12 @@ export default function Layout({ children }) {
           <div className="w-full flex-1">
             <SidebarBtn to="/dashboard" text="Dashboard" icon={<i className="bi bi-speedometer2" />} onClick={closeSidebar} />
             <SidebarBtn to="/employees" text="Employees" icon={<i className="bi bi-people-fill" />} onClick={closeSidebar} />
-            <SidebarBtn to="/settings" text="Settings" icon={<i className="bi bi-gear-fill" />} onClick={closeSidebar} />
-            <SidebarBtn to="/reports" text="Reports" icon={<i className="bi bi-bar-chart-fill" />} onClick={closeSidebar} />
+            {isSuperAdmin && (
+              <SidebarBtn to="/settings" text="Settings" icon={<i className="bi bi-gear-fill" />} onClick={closeSidebar} />
+            )}
+            {isSuperAdmin && (
+              <SidebarBtn to="/reports" text="Reports" icon={<i className="bi bi-bar-chart-fill" />} onClick={closeSidebar} />
+            )}
           <button onClick={openLogout} className="w-full py-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg shadow-md mt-auto flex-shrink-0 font-semibold transition-all hover:shadow-lg">
             <i className="bi bi-box-arrow-right mr-2" aria-hidden="true" />
             Logout

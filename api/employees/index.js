@@ -49,6 +49,9 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
+    if (user.role === 'viewer') {
+      return res.status(403).json({ message: 'Viewer role is read-only.' });
+    }
     const body = parseJsonBody(req);
     const newEmployee = toDbEmployee(body);
 
