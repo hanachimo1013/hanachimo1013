@@ -16,11 +16,18 @@ body {
   min-height: 100vh;
   background-color: #f9fafb;
   color: #111827;
+  overflow-x: hidden;
 }
 
 html.dark body {
   background-color: #111827;
   color: #f9fafb;
+}
+
+html,
+body,
+#root {
+  width: 100%;
 }
 
 .google-dots {
