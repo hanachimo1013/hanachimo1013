@@ -177,9 +177,9 @@ export default function Dashboard() {
     }
     
     return {
-      sss: employees.reduce((sum, emp) => sum + (emp.sss || 0), 0),
-      pagibig: employees.reduce((sum, emp) => sum + (emp.pagibig || 0), 0),
-      philhealth: employees.reduce((sum, emp) => sum + (emp.philhealth || 0), 0),
+      sss: employees.reduce((sum, emp) => sum + (emp.sss_ee ?? 0), 0),
+      pagibig: employees.reduce((sum, emp) => sum + (emp.pagibig_ee ?? 0), 0),
+      philhealth: employees.reduce((sum, emp) => sum + (emp.philhealth_ee ?? 0), 0),
       eeShare: employees.reduce((sum, emp) => sum + getEeShare(emp), 0),
       erShare: employees.reduce((sum, emp) => sum + getErShare(emp), 0),
     };

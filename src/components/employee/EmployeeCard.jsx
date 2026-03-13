@@ -31,20 +31,24 @@ export default function EmployeeCard({ employee, onEdit, onDelete, isViewer, mas
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div className="bg-gray-50 p-3 rounded-lg dark:bg-gray-800">
           <p className="text-xs text-gray-600 font-semibold dark:text-gray-300">SSS</p>
-          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{maskedValue || formatPeso(employee.sss)}</p>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{maskedValue || formatPeso(employee.sss_ee ?? 0)}</p>
         </div>
         <div className="bg-gray-50 p-3 rounded-lg dark:bg-gray-800">
           <p className="text-xs text-gray-600 font-semibold dark:text-gray-300">PAG-IBIG</p>
-          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{maskedValue || formatPeso(employee.pagibig)}</p>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{maskedValue || formatPeso(employee.pagibig_ee ?? 0)}</p>
         </div>
         <div className="bg-gray-50 p-3 rounded-lg dark:bg-gray-800">
           <p className="text-xs text-gray-600 font-semibold dark:text-gray-300">PhilHealth</p>
-          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{maskedValue || formatPeso(employee.philhealth)}</p>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">{maskedValue || formatPeso(employee.philhealth_ee ?? 0)}</p>
         </div>
         <div className="bg-gray-50 p-3 rounded-lg dark:bg-gray-800">
           <p className="text-xs text-gray-600 font-semibold dark:text-gray-300">Total Contributions</p>
           <p className="text-sm font-bold text-gray-800 dark:text-gray-100">
-            {maskedValue || formatPeso((employee.sss || 0) + (employee.pagibig || 0) + (employee.philhealth || 0))}
+            {maskedValue || formatPeso(
+              (employee.sss_ee ?? 0) +
+              (employee.pagibig_ee ?? 0) +
+              (employee.philhealth_ee ?? 0)
+            )}
           </p>
         </div>
         <div className="bg-blue-50 p-3 rounded-lg">

@@ -19,11 +19,11 @@ function toDbEmployee(payload) {
   return {
     name: String(payload.name || '').trim(),
     designation: String(payload.designation || '').trim(),
-    sss: Number(payload.sss || 0),
-    pagibig: Number(payload.pagibig || 0),
-    philhealth: Number(payload.philhealth || 0),
-    eeshare: Number(payload.eeShare ?? payload.eeshare ?? 0),
-    ershare: Number(payload.erShare ?? payload.ershare ?? 0),
+    sss_number: payload.sssNumber ? String(payload.sssNumber).trim() : null,
+    pagibig_number: payload.pagibigNumber ? String(payload.pagibigNumber).trim() : null,
+    philhealth_number: payload.philhealthNumber ? String(payload.philhealthNumber).trim() : null,
+    salary_per_day: Number(payload.salaryPerDay ?? payload.salary_per_day ?? 0) || 0,
+    status: payload.status ? String(payload.status).trim() : 'employed',
     photo_url: payload.photoUrl ? String(payload.photoUrl) : null,
   };
 }

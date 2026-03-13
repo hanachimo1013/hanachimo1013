@@ -54,13 +54,13 @@ const EmployeeTable = ({ employees, loading, onEdit, onDelete, onSelect, onHisto
                 {emp.__maskedDesignation ?? (emp.designation || '-')}
               </td>
               <td className="px-2 md:px-4 py-3 text-gray-700 dark:text-gray-200">
-                {emp.__maskedNumber ?? formatPeso(emp.sss)}
+                {emp.__maskedNumber ?? formatPeso(emp.sss_ee ?? 0)}
               </td>
               <td className="px-2 md:px-4 py-3 text-gray-700 dark:text-gray-200">
-                {emp.__maskedNumber ?? formatPeso(emp.pagibig)}
+                {emp.__maskedNumber ?? formatPeso(emp.pagibig_ee ?? 0)}
               </td>
               <td className="hidden md:table-cell px-4 py-3 text-gray-700 dark:text-gray-200">
-                {emp.__maskedNumber ?? formatPeso(emp.philhealth)}
+                {emp.__maskedNumber ?? formatPeso(emp.philhealth_ee ?? 0)}
               </td>
               <td className="px-2 md:px-4 py-3 text-[#10b981] font-semibold">
                 {emp.__maskedNumber ?? formatPeso(getEeShare(emp))}

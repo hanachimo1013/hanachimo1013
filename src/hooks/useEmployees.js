@@ -6,11 +6,6 @@ function toApiPayload(input) {
   return {
     name: input.name,
     designation: input.designation || '',
-    sss: Number(input.sss) || 0,
-    pagibig: Number(input.pagibig) || 0,
-    philhealth: Number(input.philhealth) || 0,
-    eeShare: Number(input.eeShare) || 0,
-    erShare: Number(input.erShare) || 0,
     sssNumber: input.sssNumber || input.sss_number || null,
     pagibigNumber: input.pagibigNumber || input.pagibig_number || null,
     philhealthNumber: input.philhealthNumber || input.philhealth_number || null,

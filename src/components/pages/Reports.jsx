@@ -19,6 +19,9 @@ export default function Reports() {
         ...emp,
         eeShare: getEeShare(emp),
         erShare: getErShare(emp),
+        sss_ee: emp.sss_ee ?? 0,
+        pagibig_ee: emp.pagibig_ee ?? 0,
+        philhealth_ee: emp.philhealth_ee ?? 0,
       })),
     [employees]
   );
@@ -26,9 +29,9 @@ export default function Reports() {
   // Calculate totals and distribution
   const calculateInsuranceReport = () => {
     const totals = {
-      sss: normalizedEmployees.reduce((sum, emp) => sum + (emp.sss || 0), 0),
-      pagibig: normalizedEmployees.reduce((sum, emp) => sum + (emp.pagibig || 0), 0),
-      philhealth: normalizedEmployees.reduce((sum, emp) => sum + (emp.philhealth || 0), 0),
+      sss: normalizedEmployees.reduce((sum, emp) => sum + (emp.sss_ee || 0), 0),
+      pagibig: normalizedEmployees.reduce((sum, emp) => sum + (emp.pagibig_ee || 0), 0),
+      philhealth: normalizedEmployees.reduce((sum, emp) => sum + (emp.philhealth_ee || 0), 0),
     };
     
     const totalPayments = Object.values(totals).reduce((a, b) => a + b, 0);
@@ -137,11 +140,11 @@ export default function Reports() {
     doc.setFont(undefined, 'normal');
     
     normalizedEmployees.forEach((emp) => {
-      const empTotal = emp.sss + emp.pagibig + emp.philhealth;
+      const empTotal = emp.sss_ee + emp.pagibig_ee + emp.philhealth_ee;
       doc.text(emp.name.substring(0, 15), 20, yPosition);
-      doc.text(formatPeso(emp.sss), 60, yPosition);
-      doc.text(formatPeso(emp.pagibig), 85, yPosition);
-      doc.text(formatPeso(emp.philhealth), 115, yPosition);
+      doc.text(formatPeso(emp.sss_ee), 60, yPosition);
+      doc.text(formatPeso(emp.pagibig_ee), 85, yPosition);
+      doc.text(formatPeso(emp.philhealth_ee), 115, yPosition);
       doc.text(formatPeso(empTotal), 150, yPosition);
       yPosition += 7;
     });
@@ -353,15 +356,15 @@ export default function Reports() {
                   </tr>
                 </thead>
                 <tbody>
-                  {normalizedEmployees.map((emp) => (
-                    <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors dark:border-gray-700 dark:hover:bg-gray-800/60">
-                      <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-100">{isViewer ? '***' : emp.name}</td>
-                      <td className="px-4 py-3 text-gray-800 dark:text-gray-200">{isViewer ? '***' : formatPeso(emp.sss)}</td>
-                      <td className="px-4 py-3 text-gray-800 dark:text-gray-200">{isViewer ? '***' : formatPeso(emp.pagibig)}</td>
-                      <td className="px-4 py-3 text-gray-800 dark:text-gray-200">{isViewer ? '***' : formatPeso(emp.philhealth)}</td>
-                      <td className="px-4 py-3 font-bold text-[#dc2626]">{isViewer ? '***' : formatPeso((emp.sss || 0) + (emp.pagibig || 0) + (emp.philhealth || 0))}</td>
-                    </tr>
-                  ))}
+                      {normalizedEmployees.map((emp) => (
+                        <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors dark:border-gray-700 dark:hover:bg-gray-800/60">
+                          <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-100">{isViewer ? '***' : emp.name}</td>
+                          <td className="px-4 py-3 text-gray-800 dark:text-gray-200">{isViewer ? '***' : formatPeso(emp.sss_ee)}</td>
+                          <td className="px-4 py-3 text-gray-800 dark:text-gray-200">{isViewer ? '***' : formatPeso(emp.pagibig_ee)}</td>
+                          <td className="px-4 py-3 text-gray-800 dark:text-gray-200">{isViewer ? '***' : formatPeso(emp.philhealth_ee)}</td>
+                          <td className="px-4 py-3 font-bold text-[#dc2626]">{isViewer ? '***' : formatPeso((emp.sss_ee || 0) + (emp.pagibig_ee || 0) + (emp.philhealth_ee || 0))}</td>
+                        </tr>
+                      ))}
                 </tbody>
               </table>
             </div>
@@ -400,15 +403,15 @@ export default function Reports() {
               <div className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm min-h-[340px]">
                 <h4 className="font-bold text-gray-800 mb-4">Employee Insurance Totals</h4>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={isViewer ? normalizedEmployees.map((emp) => ({ ...emp, sss: 0, pagibig: 0, philhealth: 0, name: '***' })) : normalizedEmployees}>
+                  <BarChart data={isViewer ? normalizedEmployees.map((emp) => ({ ...emp, sss_ee: 0, pagibig_ee: 0, philhealth_ee: 0, name: '***' })) : normalizedEmployees}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} />
                     <YAxis />
                     <Tooltip formatter={(value) => formatPeso(value)} />
                     <Legend />
-                    <Bar dataKey="sss" stackId="a" fill="#3b82f6" name="SSS" />
-                    <Bar dataKey="pagibig" stackId="a" fill="#10b981" name="PAG-IBIG" />
-                    <Bar dataKey="philhealth" stackId="a" fill="#8b5cf6" name="PhilHealth" />
+                    <Bar dataKey="sss_ee" stackId="a" fill="#3b82f6" name="SSS" />
+                    <Bar dataKey="pagibig_ee" stackId="a" fill="#10b981" name="PAG-IBIG" />
+                    <Bar dataKey="philhealth_ee" stackId="a" fill="#8b5cf6" name="PhilHealth" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
