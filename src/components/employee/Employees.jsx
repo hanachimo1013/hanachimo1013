@@ -14,11 +14,6 @@ const maskText = (value) => {
 
 const maskNumber = () => '***';
 
-const viewButtons = [
-  { view: 'table', icon: 'bi-table', label: 'Table View' },
-  { view: 'grid', icon: 'bi-grid-3x3-gap', label: 'Card View' },
-];
-
 const sortButtons = [
   { sort: 'alpha', icon: 'bi-sort-alpha-down', label: 'Alphabetical' },
   { sort: 'number', icon: 'bi-sort-numeric-down', label: 'Number' },
@@ -32,7 +27,7 @@ export default function Employees() {
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [viewMode, setViewMode] = useState('table');
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [sortMode, setSortMode] = useState('alpha');
   const [sortDir, setSortDir] = useState('asc');
 
@@ -125,12 +120,6 @@ export default function Employees() {
 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div className="flex flex-wrap gap-2">
-          {viewButtons.map(({ view, icon, label }) => (
-            <button key={view} onClick={() => setViewMode(view)} className={`px-4 py-2 rounded-lg font-semibold transition-all ${viewMode === view ? 'bg-[#10b981] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>
-              <i className={`bi ${icon} mr-2`} aria-hidden="true" />
-              {label}
-            </button>
-          ))}
           {sortButtons.map(({ sort, icon, label }) => (
             <button key={sort} onClick={() => setSortMode(sort)} className={`px-4 py-2 rounded-lg font-semibold transition-all ${sortMode === sort ? 'bg-[#f59e0b] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>
               <i className={`bi ${icon} mr-2`} aria-hidden="true" />
@@ -176,44 +165,44 @@ export default function Employees() {
         </div>
       )}
 
-      {viewMode === 'table' && (
-        <div className="overflow-y-auto flex-1 relative">
-          {loading && <LoadingOverlay message="Loading employees..." />}
-          <EmployeeTable
-            employees={displayEmployees}
-            loading={loading}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        </div>
-      )}
+      <div className="overflow-y-auto flex-1 relative">
+        {loading && <LoadingOverlay message="Loading employees..." />}
+        <EmployeeTable
+          employees={displayEmployees}
+          loading={loading}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onSelect={(emp) => setSelectedEmployee(emp)}
+        />
+      </div>
 
-      {viewMode === 'grid' && (
-        <div className="overflow-y-auto flex-1 relative">
-          {loading && <LoadingOverlay message="Loading employees..." />}
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <p className="text-gray-600 dark:text-gray-300">Loading employees...</p>
+      {selectedEmployee && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto overscroll-contain touch-pan-y pt-6 pb-24 md:items-center animate-fade-in">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fade-in"
+            onClick={() => setSelectedEmployee(null)}
+            aria-hidden="true"
+          />
+          <div className="relative w-full max-w-lg px-4 animate-fade-scale">
+            <div className="bg-white rounded-xl border-2 border-[#e6a891] shadow-xl p-4 dark:bg-gray-900 dark:border-gray-700">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">Employee Details</h3>
+                <button
+                  type="button"
+                  onClick={() => setSelectedEmployee(null)}
+                  className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-200"
+                >
+                  Close
+                </button>
+              </div>
+              <EmployeeCard
+                employee={selectedEmployee}
+                isViewer={isViewer}
+                maskText={maskText}
+                maskNumber={maskNumber}
+              />
             </div>
-          ) : !displayEmployees || displayEmployees.length === 0 ? (
-            <div className="flex items-center justify-center py-12">
-              <p className="text-gray-600 dark:text-gray-300">No employees found</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayEmployees.map((emp) => (
-                <EmployeeCard
-                  key={emp.id}
-                  employee={emp}
-                  isViewer={isViewer}
-                  maskText={maskText}
-                  maskNumber={maskNumber}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              ))}
-            </div>
-          )}
+          </div>
         </div>
       )}
     </section>

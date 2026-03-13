@@ -1,7 +1,7 @@
 import React from 'react';
 import { formatPeso, getEeShare, getErShare, getPhotoUrl } from '../../utils/formatters';
 
-const EmployeeTable = ({ employees, loading, onEdit, onDelete }) => {
+const EmployeeTable = ({ employees, loading, onEdit, onDelete, onSelect }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -47,7 +47,17 @@ const EmployeeTable = ({ employees, loading, onEdit, onDelete }) => {
                 )}
               </td>
               <td className="px-2 md:px-4 py-3 font-medium text-gray-800 dark:text-gray-100">
-                {emp.__maskedName ?? emp.name}
+                {onSelect ? (
+                  <button
+                    type="button"
+                    onClick={() => onSelect(emp)}
+                    className="text-left font-semibold text-[#b45309] hover:text-[#92400e] underline decoration-dotted underline-offset-4"
+                  >
+                    {emp.__maskedName ?? emp.name}
+                  </button>
+                ) : (
+                  emp.__maskedName ?? emp.name
+                )}
               </td>
               <td className="px-2 md:px-4 py-3 text-gray-700 text-xs md:text-sm dark:text-gray-300">
                 {emp.__maskedDesignation ?? (emp.designation || '-')}
