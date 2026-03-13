@@ -28,6 +28,40 @@ function toDbEmployee(payload) {
   };
 }
 
+function toEmployeeValues(payload) {
+  const values = {
+    ee_total: Number(payload.eeTotal ?? payload.ee_total ?? payload.eeShare ?? payload.eeshare ?? 0),
+    er_total: Number(payload.erTotal ?? payload.er_total ?? payload.erShare ?? payload.ershare ?? 0),
+    sss_ee: Number(payload.sssEe ?? payload.sss_ee ?? 0),
+    sss_er: Number(payload.sssEr ?? payload.sss_er ?? 0),
+    pagibig_ee: Number(payload.pagibigEe ?? payload.pagibig_ee ?? 0),
+    pagibig_er: Number(payload.pagibigEr ?? payload.pagibig_er ?? 0),
+    philhealth_ee: Number(payload.philhealthEe ?? payload.philhealth_ee ?? 0),
+    philhealth_er: Number(payload.philhealthEr ?? payload.philhealth_er ?? 0),
+  };
+
+  const hasValues = [
+    values.ee_total,
+    values.er_total,
+    values.sss_ee,
+    values.sss_er,
+    values.pagibig_ee,
+    values.pagibig_er,
+    values.philhealth_ee,
+    values.philhealth_er,
+  ].some((value) => Number(value) > 0);
+
+  if (!hasValues) return null;
+
+  if (payload.effectiveDate) {
+    values.effective_date = String(payload.effectiveDate);
+  } else if (payload.effective_date) {
+    values.effective_date = String(payload.effective_date);
+  }
+
+  return values;
+}
+
 export default async function handler(req, res) {
   const user = getAuthenticatedUser(req, res);
   if (!user) return;
@@ -60,6 +94,22 @@ export default async function handler(req, res) {
     if (error) {
       console.error('Employees PATCH error:', error);
       return res.status(500).json({ message: 'Failed to update employee.' });
+    }
+
+    const valuesPayload = toEmployeeValues(body);
+    if (valuesPayload) {
+      const { error: valuesError } = await supabaseAdmin
+        .from('employee_values')
+        .insert([{
+          ...valuesPayload,
+          employee_name: data.name,
+          employee_designation: data.designation || '',
+        }]);
+
+      if (valuesError) {
+        console.error('Employees PATCH values error:', valuesError);
+        return res.status(500).json({ message: 'Failed to create employee values.' });
+      }
     }
 
     return res.status(200).json({ data });
