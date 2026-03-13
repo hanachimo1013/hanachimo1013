@@ -46,6 +46,85 @@ const SidebarIconBtn = ({ to, icon, onClick, title }) => (
   </Link>
 );
 
+const SidebarContent = ({ displayName, displayRole, isEmployee, isViewer, onClose, onLogout }) => (
+  <>
+    <div className="w-24 h-24 rounded-full mb-4 shadow-lg overflow-hidden flex items-center justify-center flex-shrink-0 border-2 border-white/30">
+      <img
+        src={adminAvatar}
+        alt="Admin avatar"
+        className="w-full h-full object-cover"
+      />
+    </div>
+    <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">{displayName}</h2>
+    <p className="text-xs text-gray-600 mb-8 dark:text-gray-300">{displayRole}</p>
+
+    <div className="w-full flex-1">
+      <SidebarBtn to="/dashboard" text="Dashboard" icon={<i className="bi bi-speedometer2" />} onClick={onClose} />
+      <SidebarBtn to="/employees" text="Employees" icon={<i className="bi bi-people-fill" />} onClick={onClose} />
+      {!isEmployee && (
+        <SidebarBtn
+          to="/settings"
+          text="Settings"
+          icon={<i className="bi bi-gear-fill" />}
+          onClick={onClose}
+          disabled={isViewer}
+          title={isViewer ? 'You are in viewing mode' : undefined}
+        />
+      )}
+      {!isEmployee && (
+        <SidebarBtn
+          to="/reports"
+          text="Reports"
+          icon={<i className="bi bi-bar-chart-fill" />}
+          onClick={onClose}
+        />
+      )}
+      <button
+        onClick={onLogout}
+        className="w-full py-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg shadow-md mt-auto flex-shrink-0 font-semibold transition-all hover:shadow-lg"
+      >
+        <i className="bi bi-box-arrow-right mr-2" aria-hidden="true" />
+        Logout
+      </button>
+    </div>
+
+    <div className="mt-6 w-full rounded-lg border border-[#bc7676]/40 bg-white/70 p-3 text-center text-[10px] leading-relaxed text-gray-700 shadow-sm dark:border-gray-600 dark:bg-gray-900/60 dark:text-gray-300">
+      Built by hanachimo using React, Vite, Tailwind CSS, and Supabase.
+      c.2026
+    </div>
+  </>
+);
+
+const SidebarCollapsed = ({ isEmployee, isViewer, onClose, onLogout }) => (
+  <>
+    <SidebarIconBtn to="/dashboard" icon={<i className="bi bi-speedometer2" />} onClick={onClose} title="Dashboard" />
+    <SidebarIconBtn to="/employees" icon={<i className="bi bi-people-fill" />} onClick={onClose} title="Employees" />
+    {!isEmployee && (
+      <SidebarIconBtn
+        to="/settings"
+        icon={<i className="bi bi-gear-fill" />}
+        onClick={onClose}
+        title={isViewer ? 'You are in viewing mode' : 'Settings'}
+      />
+    )}
+    {!isEmployee && (
+      <SidebarIconBtn
+        to="/reports"
+        icon={<i className="bi bi-bar-chart-fill" />}
+        onClick={onClose}
+        title="Reports"
+      />
+    )}
+    <button
+      onClick={onLogout}
+      title="Logout"
+      className="w-12 h-12 rounded-xl mt-auto flex items-center justify-center bg-[#dc2626] hover:bg-[#b91c1c] text-white shadow-md transition-all"
+    >
+      <i className="bi bi-box-arrow-right" aria-hidden="true" />
+    </button>
+  </>
+);
+
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -145,105 +224,36 @@ export default function Layout({ children }) {
             sidebarOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
           }`}
         >
-          <div className="w-24 h-24 rounded-full mb-4 shadow-lg overflow-hidden flex items-center justify-center flex-shrink-0 border-2 border-white/30">
-            <img
-              src={adminAvatar}
-              alt="Admin avatar"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">{displayName}</h2>          <p className="text-xs text-gray-600 mb-8 dark:text-gray-300">{displayRole}</p>
-          
-          <div className="w-full flex-1">
-            <SidebarBtn to="/dashboard" text="Dashboard" icon={<i className="bi bi-speedometer2" />} onClick={closeSidebar} />
-            <SidebarBtn to="/employees" text="Employees" icon={<i className="bi bi-people-fill" />} onClick={closeSidebar} />
-            {!isEmployee && (
-              <SidebarBtn
-                to="/settings"
-                text="Settings"
-                icon={<i className="bi bi-gear-fill" />}
-                onClick={closeSidebar}
-                disabled={isViewer}
-                title={isViewer ? 'You are in viewing mode' : undefined}
-              />
-            )}
-            {!isEmployee && (
-              <SidebarBtn
-                to="/reports"
-                text="Reports"
-                icon={<i className="bi bi-bar-chart-fill" />}
-                onClick={closeSidebar}
-              />
-            )}
-          <button onClick={openLogout} className="w-full py-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg shadow-md mt-auto flex-shrink-0 font-semibold transition-all hover:shadow-lg">
-            <i className="bi bi-box-arrow-right mr-2" aria-hidden="true" />
-            Logout
-          </button>
-          </div>
-
-          <div className="mt-6 w-full rounded-lg border border-[#bc7676]/40 bg-white/70 p-3 text-center text-[10px] leading-relaxed text-gray-700 shadow-sm dark:border-gray-600 dark:bg-gray-900/60 dark:text-gray-300">
-            Built by hanachimo using React, Vite, Tailwind CSS, and Supabase.
-            c.2026
-          </div>
+          <SidebarContent
+            displayName={displayName}
+            displayRole={displayRole}
+            isEmployee={isEmployee}
+            isViewer={isViewer}
+            onClose={closeSidebar}
+            onLogout={openLogout}
+          />
         </aside>
 
         {/* Sidebar Section - Desktop */}
         {sidebarVisible ? (
           <aside className="hidden md:flex md:sticky md:top-4 w-72 bg-[#e9dcc9] p-6 flex-col items-center shadow-lg overflow-y-auto border-r-4 border-[#bc7676] dark:bg-gray-800 dark:border-gray-700 max-h-[calc(100vh-120px)]">
-          <div className="w-24 h-24 rounded-full mb-4 shadow-lg overflow-hidden flex items-center justify-center flex-shrink-0 border-2 border-white/30">
-            <img
-              src={adminAvatar}
-              alt="Admin avatar"
-              className="w-full h-full object-cover"
+            <SidebarContent
+              displayName={displayName}
+              displayRole={displayRole}
+              isEmployee={isEmployee}
+              isViewer={isViewer}
+              onClose={closeSidebar}
+              onLogout={openLogout}
             />
-          </div>
-          <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">{displayName}</h2>          <p className="text-xs text-gray-600 mb-8 dark:text-gray-300">{displayRole}</p>
-          
-          <div className="w-full flex-1">
-            <SidebarBtn to="/dashboard" text="Dashboard" icon={<i className="bi bi-speedometer2" />} onClick={closeSidebar} />
-            <SidebarBtn to="/employees" text="Employees" icon={<i className="bi bi-people-fill" />} onClick={closeSidebar} />
-            {!isEmployee && (
-              <SidebarBtn
-                to="/settings"
-                text="Settings"
-                icon={<i className="bi bi-gear-fill" />}
-                onClick={closeSidebar}
-                disabled={isViewer}
-                title={isViewer ? 'You are in viewing mode' : undefined}
-              />
-            )}
-            {!isEmployee && (
-              <SidebarBtn
-                to="/reports"
-                text="Reports"
-                icon={<i className="bi bi-bar-chart-fill" />}
-                onClick={closeSidebar}
-              />
-            )}
-          <button onClick={openLogout} className="w-full py-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg shadow-md mt-auto flex-shrink-0 font-semibold transition-all hover:shadow-lg">
-            <i className="bi bi-box-arrow-right mr-2" aria-hidden="true" />
-            Logout
-          </button>
-          </div>
-
-          <div className="mt-6 w-full rounded-lg border border-[#bc7676]/40 bg-white/70 p-3 text-center text-[10px] leading-relaxed text-gray-700 shadow-sm dark:border-gray-600 dark:bg-gray-900/60 dark:text-gray-300">
-            Built by hanachimo using React, Vite, Tailwind CSS, and Supabase.
-            c.2026
-          </div>
-        </aside>
+          </aside>
         ) : (
           <aside className="hidden md:flex md:sticky md:top-4 w-16 bg-[#e9dcc9] p-2 flex-col items-center shadow-lg border-r-4 border-[#bc7676] dark:bg-gray-800 dark:border-gray-700 max-h-[calc(100vh-120px)]">
-            <SidebarIconBtn to="/dashboard" icon={<i className="bi bi-speedometer2" />} onClick={closeSidebar} title="Dashboard" />
-            <SidebarIconBtn to="/employees" icon={<i className="bi bi-people-fill" />} onClick={closeSidebar} title="Employees" />
-            {!isEmployee && (
-              <SidebarIconBtn to="/settings" icon={<i className="bi bi-gear-fill" />} onClick={closeSidebar} title={isViewer ? 'You are in viewing mode' : 'Settings'} />
-            )}
-            {!isEmployee && (
-              <SidebarIconBtn to="/reports" icon={<i className="bi bi-bar-chart-fill" />} onClick={closeSidebar} title="Reports" />
-            )}
-            <button onClick={openLogout} title="Logout" className="w-12 h-12 rounded-xl mt-auto flex items-center justify-center bg-[#dc2626] hover:bg-[#b91c1c] text-white shadow-md transition-all">
-              <i className="bi bi-box-arrow-right" aria-hidden="true" />
-            </button>
+            <SidebarCollapsed
+              isEmployee={isEmployee}
+              isViewer={isViewer}
+              onClose={closeSidebar}
+              onLogout={openLogout}
+            />
           </aside>
         )}
 
@@ -256,5 +266,3 @@ export default function Layout({ children }) {
     </div>
   );
 }
-
-
