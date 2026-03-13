@@ -110,8 +110,8 @@ const EmployeeTable = ({ employees, loading, isViewer, onSelect }) => {
   }
 
   return (
-    <div className="h-125">
-      <table className="w-full text-sm block overflow-auto max-h-125">
+    <div className="h-[60vh] md:h-[50vh] overflow-auto">
+      <table className="w-full text-sm">
         <thead>
           <tr className="border-b-2 border-[#e6a891] bg-gray-100 dark:bg-gray-800 dark:border-gray-700">
             <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Name</th>
