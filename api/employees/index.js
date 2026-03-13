@@ -196,11 +196,11 @@ export default async function handler(req, res) {
     if (valuesPayload) {
       const { error: valuesError } = await supabaseAdmin
         .from('employee_values')
-        .insert([{
+        .upsert([{
           ...valuesPayload,
           employee_name: data.name,
           employee_designation: data.designation || '',
-        }]);
+        }], { onConflict: 'employee_name,employee_designation' });
 
       if (valuesError) {
         console.error('Employees POST values error:', valuesError);
