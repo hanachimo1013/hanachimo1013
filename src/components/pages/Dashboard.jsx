@@ -91,8 +91,16 @@ const generateEmployerReceipt = (employee, masked) => {
   window.open(pdfUrl);
 };
 
+const maskText = (value) => {
+  const text = String(value || '');
+  if (text.length <= 2) return '*'.repeat(text.length);
+  return `${text.slice(0, 2)}${'*'.repeat(Math.max(1, text.length - 3))}${text.slice(-1)}`;
+};
+
+const maskNumber = () => '***';
+
 // Employee Table Component
-const EmployeeTable = ({ employees, loading, isViewer }) => {
+const EmployeeTable = ({ employees, loading, isViewer, onSelect }) => {
   if (loading) {
     return <div className="text-center py-8 text-gray-500 dark:text-gray-300">Loading employee data...</div>;
   }
@@ -116,7 +124,19 @@ const EmployeeTable = ({ employees, loading, isViewer }) => {
         <tbody>
           {employees.map((emp) => (
             <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors dark:border-gray-700 dark:hover:bg-gray-800/60">
-              <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-100">{isViewer ? '***' : emp.name}</td>
+              <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-100">
+                {onSelect ? (
+                  <button
+                    type="button"
+                    onClick={() => onSelect(emp)}
+                    className="text-left font-semibold text-[#b45309] hover:text-[#92400e] underline decoration-dotted underline-offset-4"
+                  >
+                    {isViewer ? '***' : emp.name}
+                  </button>
+                ) : (
+                  isViewer ? '***' : emp.name
+                )}
+              </td>
               <td className="px-4 py-3 font-semibold text-[#10b981]">{isViewer ? '***' : formatPeso(getEeShare(emp))}</td>
               <td className="px-4 py-3 font-semibold text-[#3b82f6]">{isViewer ? '***' : formatPeso(getErShare(emp))}</td>
               <td className="px-4 py-3 font-bold text-[#dc2626]">{isViewer ? '***' : formatPeso(getEeShare(emp) + getErShare(emp))}</td>
@@ -143,7 +163,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const isViewer = user?.role === 'viewer';
   const { employees, loading } = useEmployees();
-  const [viewMode, setViewMode] = useState('table'); // 'table' or 'grid'
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const totals = useMemo(() => {
     if (!employees || employees.length === 0) {
@@ -179,63 +199,49 @@ export default function Dashboard() {
             <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-1 dark:text-gray-100">Employee Directory</h3>
             <p className="text-gray-600 text-xs md:text-sm dark:text-gray-300">Recently active employees</p>
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setViewMode('table')}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-                viewMode === 'table'
-                  ? 'bg-[#10b981] text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
-              }`}
-            >
-              <i className="bi bi-table mr-2" aria-hidden="true" />
-              Table
-            </button>
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-                viewMode === 'grid'
-                  ? 'bg-[#10b981] text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
-              }`}
-            >
-              <i className="bi bi-grid-3x3-gap mr-2" aria-hidden="true" />
-              Cards
-            </button>
-          </div>
         </div>
 
         <div className="relative">
           {loading && <LoadingOverlay message="Loading employees..." />}
 
-          {/* Table View */}
-          {viewMode === 'table' && <EmployeeTable employees={employees} loading={loading} isViewer={isViewer} />}
-
-          {/* Grid View */}
-          {viewMode === 'grid' && (
-            <>
-              {loading ? (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-300">Loading employee data...</div>
-              ) : !employees || employees.length === 0 ? (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-300">No employee data available</div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {employees.map(emp => (
-                    <div key={emp.id}>
-                      <EmployeeCard
-                        employee={emp}
-                        isViewer={isViewer}
-                        maskText={() => '***'}
-                        maskNumber={() => '***'}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
+          <EmployeeTable
+            employees={employees}
+            loading={loading}
+            isViewer={isViewer}
+            onSelect={(emp) => setSelectedEmployee(emp)}
+          />
         </div>
       </section>
+
+      {selectedEmployee && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto overscroll-contain touch-pan-y pt-6 pb-24 md:items-center animate-fade-in">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fade-in"
+            onClick={() => setSelectedEmployee(null)}
+            aria-hidden="true"
+          />
+          <div className="relative w-full max-w-lg px-4 animate-fade-scale">
+            <div className="bg-white rounded-xl border-2 border-[#e6a891] shadow-xl p-4 dark:bg-gray-900 dark:border-gray-700">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">Employee Details</h3>
+                <button
+                  type="button"
+                  onClick={() => setSelectedEmployee(null)}
+                  className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-200"
+                >
+                  Close
+                </button>
+              </div>
+              <EmployeeCard
+                employee={selectedEmployee}
+                isViewer={isViewer}
+                maskText={maskText}
+                maskNumber={maskNumber}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
