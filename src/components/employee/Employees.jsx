@@ -112,12 +112,6 @@ export default function Employees() {
         <p className="text-xs md:text-base text-gray-600 dark:text-gray-300">Manage and view all employees in the system</p>
       </div>
 
-      {error && (
-        <div className="mb-6 p-4 bg-red-100 border-2 border-red-500 rounded-lg dark:bg-red-900/40 dark:border-red-700">
-          <p className="text-red-700 font-semibold dark:text-red-200">{error}</p>
-        </div>
-      )}
-
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div className="flex flex-wrap gap-2">
           {sortButtons.map(({ sort, icon, label }) => (
@@ -155,6 +149,11 @@ export default function Employees() {
             aria-hidden="true"
           />
           <div className="relative w-full max-w-4xl px-4 animate-fade-scale">
+            {error && (
+              <div className="mb-4 p-4 bg-red-100 border-2 border-red-500 rounded-lg dark:bg-red-900/40 dark:border-red-700">
+                <p className="text-red-700 font-semibold dark:text-red-200">{error}</p>
+              </div>
+            )}
             <EmployeeForm
               onSubmit={handleFormSubmit}
               onCancel={handleFormCancel}
