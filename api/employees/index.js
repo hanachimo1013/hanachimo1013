@@ -24,8 +24,47 @@ function toDbEmployee(payload) {
     philhealth: Number(payload.philhealth || 0),
     eeshare: Number(payload.eeShare ?? payload.eeshare ?? 0),
     ershare: Number(payload.erShare ?? payload.ershare ?? 0),
-    photo_url: payload.photoUrl ? String(payload.photoUrl) : null,
+    sss_number: payload.sssNumber ? String(payload.sssNumber).trim() : null,
+    pagibig_number: payload.pagibigNumber ? String(payload.pagibigNumber).trim() : null,
+    philhealth_number: payload.philhealthNumber ? String(payload.philhealthNumber).trim() : null,
+    salary_per_day: Number(payload.salaryPerDay ?? payload.salary_per_day ?? 0) || 0,
+    status: payload.status ? String(payload.status).trim() : 'employed',
+    photo_url: payload.photoUrl ? String(payload.photoUrl) : (payload.photo_url ? String(payload.photo_url) : null),
   };
+}
+
+function toEmployeeValues(payload) {
+  const values = {
+    ee_total: Number(payload.eeTotal ?? payload.ee_total ?? payload.eeShare ?? payload.eeshare ?? 0),
+    er_total: Number(payload.erTotal ?? payload.er_total ?? payload.erShare ?? payload.ershare ?? 0),
+    sss_ee: Number(payload.sssEe ?? payload.sss_ee ?? 0),
+    sss_er: Number(payload.sssEr ?? payload.sss_er ?? 0),
+    pagibig_ee: Number(payload.pagibigEe ?? payload.pagibig_ee ?? 0),
+    pagibig_er: Number(payload.pagibigEr ?? payload.pagibig_er ?? 0),
+    philhealth_ee: Number(payload.philhealthEe ?? payload.philhealth_ee ?? 0),
+    philhealth_er: Number(payload.philhealthEr ?? payload.philhealth_er ?? 0),
+  };
+
+  const hasValues = [
+    values.ee_total,
+    values.er_total,
+    values.sss_ee,
+    values.sss_er,
+    values.pagibig_ee,
+    values.pagibig_er,
+    values.philhealth_ee,
+    values.philhealth_er,
+  ].some((value) => Number(value) > 0);
+
+  if (!hasValues) return null;
+
+  if (payload.effectiveDate) {
+    values.effective_date = String(payload.effectiveDate);
+  } else if (payload.effective_date) {
+    values.effective_date = String(payload.effective_date);
+  }
+
+  return values;
 }
 
 function maskText(value) {
@@ -44,8 +83,40 @@ function maskEmployeesForViewer(list) {
     philhealth: 0,
     eeshare: 0,
     ershare: 0,
+    ee_total: 0,
+    er_total: 0,
+    sss_ee: 0,
+    sss_er: 0,
+    pagibig_ee: 0,
+    pagibig_er: 0,
+    philhealth_ee: 0,
+    philhealth_er: 0,
+    sss_number: null,
+    pagibig_number: null,
+    philhealth_number: null,
     photo_url: null,
   }));
+}
+
+function buildEmployeeKey(employee) {
+  const name = String(employee?.name || '').trim();
+  const designation = String(employee?.designation || '').trim();
+  return `${name}||${designation}`;
+}
+
+function mergeEmployeeValues(employee, values) {
+  if (!values) return employee;
+  return {
+    ...employee,
+    ee_total: values.ee_total ?? employee.ee_total,
+    er_total: values.er_total ?? employee.er_total,
+    sss_ee: values.sss_ee ?? employee.sss_ee,
+    sss_er: values.sss_er ?? employee.sss_er,
+    pagibig_ee: values.pagibig_ee ?? employee.pagibig_ee,
+    pagibig_er: values.pagibig_er ?? employee.pagibig_er,
+    philhealth_ee: values.philhealth_ee ?? employee.philhealth_ee,
+    philhealth_er: values.philhealth_er ?? employee.philhealth_er,
+  };
 }
 
 export default async function handler(req, res) {
@@ -55,7 +126,7 @@ export default async function handler(req, res) {
   const supabaseAdmin = getSupabaseAdmin();
 
   if (req.method === 'GET') {
-    const { data, error } = await supabaseAdmin
+    const { data: employees, error } = await supabaseAdmin
       .from('employees')
       .select('*')
       .order('id', { ascending: true });
@@ -65,7 +136,31 @@ export default async function handler(req, res) {
       return res.status(500).json({ message: 'Failed to fetch employees.' });
     }
 
-    const result = user.role === 'viewer' ? maskEmployeesForViewer(data || []) : (data || []);
+    const { data: valuesRows, error: valuesError } = await supabaseAdmin
+      .from('employee_values')
+      .select('*')
+      .order('effective_date', { ascending: false })
+      .order('created_at', { ascending: false });
+
+    if (valuesError) {
+      console.error('Employee values GET error:', valuesError);
+      return res.status(500).json({ message: 'Failed to fetch employee values.' });
+    }
+
+    const valuesByKey = new Map();
+    (valuesRows || []).forEach((row) => {
+      const key = `${String(row.employee_name || '').trim()}||${String(row.employee_designation || '').trim()}`;
+      if (!valuesByKey.has(key)) {
+        valuesByKey.set(key, row);
+      }
+    });
+
+    const merged = (employees || []).map((emp) => {
+      const key = buildEmployeeKey(emp);
+      return mergeEmployeeValues(emp, valuesByKey.get(key));
+    });
+
+    const result = user.role === 'viewer' ? maskEmployeesForViewer(merged) : merged;
     return res.status(200).json({ data: result });
   }
 
@@ -84,6 +179,7 @@ export default async function handler(req, res) {
       .from('employees')
       .select('id')
       .ilike('name', newEmployee.name)
+      .ilike('designation', newEmployee.designation)
       .limit(1);
 
     if (existingError) {
@@ -104,6 +200,23 @@ export default async function handler(req, res) {
     if (error) {
       console.error('Employees POST error:', error);
       return res.status(500).json({ message: 'Failed to create employee.' });
+    }
+
+    const valuesPayload = toEmployeeValues(body);
+    if (valuesPayload) {
+      const { error: valuesError } = await supabaseAdmin
+        .from('employee_values')
+        .insert([{
+          ...valuesPayload,
+          employee_name: data.name,
+          employee_designation: data.designation || '',
+        }]);
+
+      if (valuesError) {
+        console.error('Employees POST values error:', valuesError);
+        await supabaseAdmin.from('employees').delete().eq('id', data.id);
+        return res.status(500).json({ message: 'Failed to create employee values.' });
+      }
     }
 
     return res.status(201).json({ data });

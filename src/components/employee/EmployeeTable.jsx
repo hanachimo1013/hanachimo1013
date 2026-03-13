@@ -1,7 +1,7 @@
 import React from 'react';
 import { formatPeso, getEeShare, getErShare, getPhotoUrl } from '../../utils/formatters';
 
-const EmployeeTable = ({ employees, loading, onEdit, onDelete, onSelect }) => {
+const EmployeeTable = ({ employees, loading, onEdit, onDelete, onSelect, onHistory }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -29,8 +29,9 @@ const EmployeeTable = ({ employees, loading, onEdit, onDelete, onSelect }) => {
             <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">SSS</th>
             <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">PAG-IBIG</th>
             <th className="hidden md:table-cell px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">PhilHealth</th>
-            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">EE Share</th>
-            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">ER Share</th>
+            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">EE Total</th>
+            <th className="px-2 md:px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">ER Total</th>
+            <th className="px-2 md:px-4 py-3 text-center font-bold text-gray-700 dark:text-gray-200">History</th>
             <th className="px-2 md:px-4 py-3 text-center font-bold text-gray-700 dark:text-gray-200">Actions</th>
           </tr>
         </thead>
@@ -76,6 +77,16 @@ const EmployeeTable = ({ employees, loading, onEdit, onDelete, onSelect }) => {
               </td>
               <td className="px-2 md:px-4 py-3 text-[#3b82f6] font-semibold">
                 {emp.__maskedNumber ?? formatPeso(getErShare(emp))}
+              </td>
+              <td className="px-2 md:px-4 py-3 text-center">
+                <button
+                  type="button"
+                  onClick={() => onHistory?.(emp)}
+                  className="px-2 py-1 bg-[#0ea5e9] hover:bg-[#0284c7] text-white rounded text-xs font-semibold transition-all"
+                >
+                  <i className="bi bi-clock-history mr-1" aria-hidden="true" />
+                  History
+                </button>
               </td>
               <td className="px-2 md:px-4 py-3 text-center">
                 <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-center">

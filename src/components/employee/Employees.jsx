@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useEmployees } from '../../hooks/useEmployees';
 import EmployeeCard from './EmployeeCard';
 import EmployeeForm from './EmployeeForm';
 import EmployeeTable from './EmployeeTable';
 import LoadingOverlay from '../ui/LoadingOverlay';
 import { useAuth } from '../../context/AuthContext';
+import { formatPeso } from '../../utils/formatters';
 
 const maskText = (value) => {
   const text = String(value || '');
@@ -22,12 +23,17 @@ const sortButtons = [
 export default function Employees() {
   const { user } = useAuth();
   const isViewer = user?.role === 'viewer';
-  const { employees, loading, addEmployee, updateEmployee, deleteEmployee } = useEmployees();
+  const { employees, loading, valuesLoading, addEmployee, updateEmployee, deleteEmployee, fetchEmployeeValues } = useEmployees();
   const [showForm, setShowForm] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [valuesHistory, setValuesHistory] = useState([]);
+  const [valuesError, setValuesError] = useState(null);
+  const [valuesOffset, setValuesOffset] = useState(0);
+  const [valuesHasMore, setValuesHasMore] = useState(false);
+  const valuesPageSize = 10;
   const [sortMode, setSortMode] = useState('alpha');
   const [sortDir, setSortDir] = useState('asc');
 
@@ -105,6 +111,57 @@ export default function Employees() {
     setEditingEmployee(null);
   };
 
+  useEffect(() => {
+    let active = true;
+    if (!selectedEmployee) {
+      setValuesHistory([]);
+      setValuesError(null);
+      setValuesOffset(0);
+      setValuesHasMore(false);
+      return () => {};
+    }
+
+    const loadValues = async () => {
+      const result = await fetchEmployeeValues(selectedEmployee, {
+        limit: valuesPageSize,
+        offset: 0,
+      });
+      if (!active) return;
+      if (!result.success) {
+        setValuesError(result.error || 'Failed to load values.');
+        setValuesHistory([]);
+        setValuesHasMore(false);
+        return;
+      }
+      setValuesError(null);
+      const rows = result.data || [];
+      setValuesHistory(rows);
+      setValuesHasMore(rows.length === valuesPageSize);
+    };
+
+    loadValues();
+    return () => {
+      active = false;
+    };
+  }, [selectedEmployee, fetchEmployeeValues]);
+
+  const handleLoadMoreValues = async () => {
+    if (!selectedEmployee) return;
+    const nextOffset = valuesOffset + valuesPageSize;
+    const result = await fetchEmployeeValues(selectedEmployee, {
+      limit: valuesPageSize,
+      offset: nextOffset,
+    });
+    if (!result.success) {
+      setValuesError(result.error || 'Failed to load values.');
+      return;
+    }
+    const rows = result.data || [];
+    setValuesHistory((prev) => [...prev, ...rows]);
+    setValuesOffset(nextOffset);
+    setValuesHasMore(rows.length === valuesPageSize);
+  };
+
   return (
     <section className="bg-white rounded-lg shadow-md flex-1 flex flex-col overflow-hidden p-4 md:p-8 dark:bg-gray-900 dark:text-gray-100">
       <div className="mb-6">
@@ -172,6 +229,7 @@ export default function Employees() {
           onEdit={handleEdit}
           onDelete={handleDelete}
           onSelect={(emp) => setSelectedEmployee(emp)}
+          onHistory={(emp) => setSelectedEmployee(emp)}
         />
       </div>
 
@@ -200,6 +258,52 @@ export default function Employees() {
                 maskText={maskText}
                 maskNumber={maskNumber}
               />
+
+              <div className="mt-6">
+                <h4 className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-2">Values History</h4>
+                {valuesLoading && (
+                  <p className="text-xs text-gray-500 dark:text-gray-300">Loading values...</p>
+                )}
+                {valuesError && (
+                  <p className="text-xs text-red-600 dark:text-red-300">{valuesError}</p>
+                )}
+                {!valuesLoading && !valuesError && valuesHistory.length === 0 && (
+                  <p className="text-xs text-gray-500 dark:text-gray-300">No values history yet.</p>
+                )}
+                {!valuesLoading && valuesHistory.length > 0 && (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="text-left text-gray-500 dark:text-gray-300">
+                          <th className="py-2">Date</th>
+                          <th className="py-2">EE Total</th>
+                          <th className="py-2">ER Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {valuesHistory.map((row) => (
+                          <tr key={row.id} className="border-t border-gray-200 dark:border-gray-700">
+                            <td className="py-2">{row.effective_date || '-'}</td>
+                            <td className="py-2">{isViewer ? '***' : formatPeso(row.ee_total)}</td>
+                            <td className="py-2">{isViewer ? '***' : formatPeso(row.er_total)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                {!valuesLoading && valuesHasMore && (
+                  <div className="mt-3">
+                    <button
+                      type="button"
+                      onClick={handleLoadMoreValues}
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-200"
+                    >
+                      Load more
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

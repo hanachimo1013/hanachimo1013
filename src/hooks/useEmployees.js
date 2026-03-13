@@ -11,7 +11,21 @@ function toApiPayload(input) {
     philhealth: Number(input.philhealth) || 0,
     eeShare: Number(input.eeShare) || 0,
     erShare: Number(input.erShare) || 0,
-    photoUrl: input.photoUrl || null,
+    sssNumber: input.sssNumber || input.sss_number || null,
+    pagibigNumber: input.pagibigNumber || input.pagibig_number || null,
+    philhealthNumber: input.philhealthNumber || input.philhealth_number || null,
+    salaryPerDay: Number(input.salaryPerDay ?? input.salary_per_day ?? 0) || 0,
+    status: input.status || null,
+    effectiveDate: input.effectiveDate || input.effective_date || null,
+    eeTotal: Number(input.eeTotal ?? input.ee_total ?? input.eeShare ?? input.eeshare ?? 0) || 0,
+    erTotal: Number(input.erTotal ?? input.er_total ?? input.erShare ?? input.ershare ?? 0) || 0,
+    sssEe: Number(input.sssEe ?? input.sss_ee ?? 0) || 0,
+    sssEr: Number(input.sssEr ?? input.sss_er ?? 0) || 0,
+    pagibigEe: Number(input.pagibigEe ?? input.pagibig_ee ?? 0) || 0,
+    pagibigEr: Number(input.pagibigEr ?? input.pagibig_er ?? 0) || 0,
+    philhealthEe: Number(input.philhealthEe ?? input.philhealth_ee ?? 0) || 0,
+    philhealthEr: Number(input.philhealthEr ?? input.philhealth_er ?? 0) || 0,
+    photoUrl: input.photoUrl || input.photo_url || null,
   };
 }
 
@@ -37,6 +51,7 @@ export const useEmployees = () => {
   const { token } = useAuth();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [valuesLoading, setValuesLoading] = useState(false);
 
   const request = useCallback(async (path, options = {}) => {
     if (!token) {
@@ -121,12 +136,42 @@ export const useEmployees = () => {
     }
   };
 
+  const fetchEmployeeValues = async (employee, options = {}) => {
+    const name = employee?.name;
+    const designation = employee?.designation ?? '';
+    const limit = Number(options.limit || 10);
+    const offset = Number(options.offset || 0);
+
+    if (!name) {
+      return { success: false, error: 'Employee name is required.' };
+    }
+
+    try {
+      setValuesLoading(true);
+      const query = new URLSearchParams({
+        name: String(name),
+        designation: String(designation),
+        limit: String(limit),
+        offset: String(offset),
+      });
+      const payload = await request(`/api/employee-values?${query.toString()}`);
+      return { success: true, data: payload?.data || [] };
+    } catch (err) {
+      console.error('Error fetching employee values:', err);
+      return { success: false, error: err.message };
+    } finally {
+      setValuesLoading(false);
+    }
+  };
+
   return {
     employees,
     loading,
+    valuesLoading,
     addEmployee,
     updateEmployee,
     deleteEmployee,
+    fetchEmployeeValues,
     refetch: fetchEmployees,
   };
 };

@@ -48,11 +48,11 @@ export default function EmployeeCard({ employee, onEdit, onDelete, isViewer, mas
           </p>
         </div>
         <div className="bg-blue-50 p-3 rounded-lg">
-          <p className="text-xs text-blue-600 font-semibold">EE Share</p>
+          <p className="text-xs text-blue-600 font-semibold">EE Total</p>
           <p className="text-sm font-bold text-blue-700">{maskedValue || formatPeso(getEeShare(employee))}</p>
         </div>
         <div className="bg-green-50 p-3 rounded-lg">
-          <p className="text-xs text-green-600 font-semibold">ER Share</p>
+          <p className="text-xs text-green-600 font-semibold">ER Total</p>
           <p className="text-sm font-bold text-green-700">{maskedValue || formatPeso(getErShare(employee))}</p>
         </div>
       </div>

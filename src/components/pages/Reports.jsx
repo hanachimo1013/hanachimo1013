@@ -75,7 +75,7 @@ export default function Reports() {
     doc.text('BDLAG UTILITY', pageWidth / 2, 20, { align: 'center' });
     
     doc.setFontSize(14);
-    doc.text('Insurance Payment Report', pageWidth / 2, 32, { align: 'center' });
+    doc.text('Insurance Totals Report', pageWidth / 2, 32, { align: 'center' });
     
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
@@ -88,7 +88,7 @@ export default function Reports() {
     // Overall Total
     doc.setFont(undefined, 'bold');
     doc.setFontSize(12);
-    doc.text('Overall Total Insurance Payments', 20, 62);
+    doc.text('Overall Insurance Totals', 20, 62);
     
     doc.setFont(undefined, 'normal');
     doc.setFontSize(11);
@@ -100,7 +100,7 @@ export default function Reports() {
     // Detailed Distribution
     doc.setFont(undefined, 'bold');
     doc.setFontSize(12);
-    doc.text('Detailed Payment Distribution', 20, 90);
+    doc.text('Detailed Insurance Distribution', 20, 90);
     
     doc.setFont(undefined, 'normal');
     doc.setFontSize(10);
@@ -164,7 +164,7 @@ export default function Reports() {
     doc.text('BDLAG UTILITY', pageWidth / 2, 20, { align: 'center' });
     
     doc.setFontSize(14);
-    doc.text('Salary and Share Distribution Report', pageWidth / 2, 32, { align: 'center' });
+    doc.text('Contribution Totals Distribution Report', pageWidth / 2, 32, { align: 'center' });
     
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
@@ -181,8 +181,8 @@ export default function Reports() {
     
     doc.setFont(undefined, 'normal');
     doc.setFontSize(11);
-    doc.text(`Employee Share (EE) Total: ${formatPeso(eeTotal)}`, 30, 72);
-    doc.text(`Employer Share (ER) Total: ${formatPeso(erTotal)}`, 30, 82);
+    doc.text(`Employee Total (EE): ${formatPeso(eeTotal)}`, 30, 72);
+    doc.text(`Employer Total (ER): ${formatPeso(erTotal)}`, 30, 82);
     doc.text(`Grand Total: ${formatPeso(totalPayments)}`, 30, 95);
     
     doc.setFont(undefined, 'normal');
@@ -197,14 +197,14 @@ export default function Reports() {
     // Employee Details Table
     doc.setFont(undefined, 'bold');
     doc.setFontSize(12);
-    doc.text('Employee Details', 20, 122);
+    doc.text('Employee Totals', 20, 122);
     
     doc.setFont(undefined, 'bold');
     doc.setFontSize(9);
     let yPosition = 132;
     doc.text('Employee', 20, yPosition);
-    doc.text('EE Share', 70, yPosition);
-    doc.text('ER Share', 110, yPosition);
+    doc.text('EE Total', 70, yPosition);
+    doc.text('ER Total', 110, yPosition);
     doc.text('Total', 150, yPosition);
     
     yPosition += 8;
@@ -275,7 +275,7 @@ export default function Reports() {
                   <i className="bi bi-clipboard2-pulse" aria-hidden="true" />
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-100">Insurance Payment Report</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-100">Insurance Totals Report</h3>
               <p className="text-gray-600 text-sm mb-4 flex-1 dark:text-gray-300">Overall total and detailed distribution of SSS, PAG-IBIG, and PhilHealth</p>
               <button className="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-4 py-2 rounded-lg font-medium transition-all">
                 <i className="bi bi-graph-up mr-2" aria-hidden="true" />
@@ -292,8 +292,8 @@ export default function Reports() {
                   <i className="bi bi-cash-coin" aria-hidden="true" />
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-100">Salary Distribution Report</h3>
-              <p className="text-gray-600 text-sm mb-4 flex-1 dark:text-gray-300">Employee and Employer share breakdown with totals</p>
+            <h3 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-100">Contribution Totals Report</h3>
+            <p className="text-gray-600 text-sm mb-4 flex-1 dark:text-gray-300">Employee and employer totals breakdown</p>
               <button className="bg-[#10b981] hover:bg-[#059669] text-white px-4 py-2 rounded-lg font-medium transition-all">
                 <i className="bi bi-graph-up-arrow mr-2" aria-hidden="true" />
                 View Report
@@ -313,11 +313,11 @@ export default function Reports() {
               Back to Reports
             </button>
             
-            <h3 className="text-2xl font-bold text-gray-800 mb-6 dark:text-white">Insurance Payment Report</h3>
+            <h3 className="text-2xl font-bold text-gray-800 mb-6 dark:text-white">Insurance Totals Report</h3>
             
             {/* Overall Total */}
             <div className="bg-gradient-to-r from-[#f2dede] to-[#fce4ec] p-6 rounded-lg shadow-md mb-6 dark:from-gray-800 dark:to-gray-900">
-              <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Overall Total Insurance Payments</p>
+              <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Overall Insurance Totals</p>
               <p className="text-4xl font-bold text-[#dc2626] dark:text-red-300">{isViewer ? '***' : formatPeso(maskedTotals.totalPayments)}</p>
             </div>
 
@@ -370,7 +370,7 @@ export default function Reports() {
             <div className="grid grid-cols-1 gap-4 mb-6 mt-6 md:grid-cols-2 md:gap-6">
               {/* Pie Chart */}
               <div className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm min-h-[340px]">
-                <h4 className="font-bold text-gray-800 mb-4">Distribution by Insurance Type</h4>
+                <h4 className="font-bold text-gray-800 mb-4">Insurance Distribution</h4>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
@@ -398,7 +398,7 @@ export default function Reports() {
 
               {/* Bar Chart */}
               <div className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm min-h-[340px]">
-                <h4 className="font-bold text-gray-800 mb-4">Employee Contributions</h4>
+                <h4 className="font-bold text-gray-800 mb-4">Employee Insurance Totals</h4>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={isViewer ? normalizedEmployees.map((emp) => ({ ...emp, sss: 0, pagibig: 0, philhealth: 0, name: '***' })) : normalizedEmployees}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -448,18 +448,18 @@ export default function Reports() {
               Back to Reports
             </button>
             
-            <h3 className="text-2xl font-bold text-gray-800 mb-6 dark:text-white">Salary Distribution Report</h3>
+            <h3 className="text-2xl font-bold text-gray-800 mb-6 dark:text-white">Contribution Totals Report</h3>
             
             {/* Overall Summary */}
             <div className="bg-gradient-to-r from-[#f2dede] to-[#fce4ec] p-6 rounded-lg shadow-md mb-6 dark:from-gray-800 dark:to-gray-900">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div>
-                  <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Employee Share (EE) Total</p>
-                  <p className="text-2xl font-bold text-[#10b981] dark:text-emerald-300">{isViewer ? '***' : formatPeso(maskedSalaryData.eeTotal)}</p>
+              <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Employee Total (EE)</p>
+              <p className="text-2xl font-bold text-[#10b981] dark:text-emerald-300">{isViewer ? '***' : formatPeso(maskedSalaryData.eeTotal)}</p>
                 </div>
                 <div>
-                  <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Employer Share (ER) Total</p>
-                  <p className="text-2xl font-bold text-[#3b82f6] dark:text-blue-300">{isViewer ? '***' : formatPeso(maskedSalaryData.erTotal)}</p>
+              <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Employer Total (ER)</p>
+              <p className="text-2xl font-bold text-[#3b82f6] dark:text-blue-300">{isViewer ? '***' : formatPeso(maskedSalaryData.erTotal)}</p>
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">Grand Total</p>
@@ -471,12 +471,12 @@ export default function Reports() {
             {/* Share Distribution */}
             <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
               <div className="bg-green-50 border-l-4 border-[#10b981] p-6 rounded dark:bg-gray-800">
-                <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">EE Share Percentage</p>
-                <p className="text-3xl font-bold text-[#10b981] dark:text-emerald-300">{isViewer ? '0.0%' : ((salaryData.eeTotal / salaryData.totalPayments) * 100).toFixed(1)}%</p>
+              <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">EE Total Percentage</p>
+              <p className="text-3xl font-bold text-[#10b981] dark:text-emerald-300">{isViewer ? '0.0%' : ((salaryData.eeTotal / salaryData.totalPayments) * 100).toFixed(1)}%</p>
               </div>
               <div className="bg-blue-50 border-l-4 border-[#3b82f6] p-6 rounded dark:bg-gray-800">
-                <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">ER Share Percentage</p>
-                <p className="text-3xl font-bold text-[#3b82f6] dark:text-blue-300">{isViewer ? '0.0%' : ((salaryData.erTotal / salaryData.totalPayments) * 100).toFixed(1)}%</p>
+              <p className="text-gray-600 text-sm mb-2 dark:text-gray-300">ER Total Percentage</p>
+              <p className="text-3xl font-bold text-[#3b82f6] dark:text-blue-300">{isViewer ? '0.0%' : ((salaryData.erTotal / salaryData.totalPayments) * 100).toFixed(1)}%</p>
               </div>
             </div>
 
@@ -486,8 +486,8 @@ export default function Reports() {
                 <thead>
                   <tr className="border-b-2 border-[#e6a891] bg-gray-100 dark:bg-gray-800 dark:border-gray-700">
                     <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Employee</th>
-                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">EE Share</th>
-                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">ER Share</th>
+                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">EE Total</th>
+                    <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">ER Total</th>
                     <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Total</th>
                   </tr>
                 </thead>
@@ -508,13 +508,13 @@ export default function Reports() {
             <div className="grid grid-cols-1 gap-4 mb-6 mt-6 md:grid-cols-2 md:gap-6">
               {/* Pie Chart */}
               <div className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm min-h-[340px]">
-                <h4 className="font-bold text-gray-800 mb-4">EE vs ER Share Distribution</h4>
+                <h4 className="font-bold text-gray-800 mb-4">EE vs ER Totals Distribution</h4>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                   <Pie
                     data={[
-                      { name: 'EE Share', value: isViewer ? 0 : salaryData.eeTotal },
-                      { name: 'ER Share', value: isViewer ? 0 : salaryData.erTotal }
+                      { name: 'EE Total', value: isViewer ? 0 : salaryData.eeTotal },
+                      { name: 'ER Total', value: isViewer ? 0 : salaryData.erTotal }
                     ]}
                       cx="50%"
                       cy="50%"
@@ -534,7 +534,7 @@ export default function Reports() {
 
               {/* Bar Chart */}
               <div className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm min-h-[340px]">
-                <h4 className="font-bold text-gray-800 mb-4">Employee Share Comparison</h4>
+                <h4 className="font-bold text-gray-800 mb-4">Employee Totals Comparison</h4>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={isViewer ? normalizedEmployees.map((emp) => ({ ...emp, eeShare: 0, erShare: 0, name: '***' })) : normalizedEmployees}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -542,8 +542,8 @@ export default function Reports() {
                     <YAxis />
                     <Tooltip formatter={(value) => formatPeso(value)} />
                     <Legend />
-                    <Bar dataKey="eeShare" fill="#10b981" name="EE Share" />
-                    <Bar dataKey="erShare" fill="#3b82f6" name="ER Share" />
+                    <Bar dataKey="eeShare" fill="#10b981" name="EE Total" />
+                    <Bar dataKey="erShare" fill="#3b82f6" name="ER Total" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

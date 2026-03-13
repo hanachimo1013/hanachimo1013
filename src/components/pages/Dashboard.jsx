@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import jsPDF from 'jspdf';
 import { useEmployees } from '../../hooks/useEmployees';
 import EmployeeCard from '../employee/EmployeeCard';
@@ -14,7 +14,7 @@ const StatusCard = ({ title, value }) => (
 );
 
 
-// Function to generate PDF receipt for employer share
+// Function to generate PDF receipt for contribution totals
 const generateEmployerReceipt = (employee, masked) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -28,7 +28,7 @@ const generateEmployerReceipt = (employee, masked) => {
   
   doc.setFontSize(14);
   doc.setFont(undefined, 'bold');
-  doc.text('Employer Share Receipt', pageWidth / 2, 32, { align: 'center' });
+  doc.text('Contribution Totals Receipt', pageWidth / 2, 32, { align: 'center' });
   
   doc.setFontSize(10);
   doc.setFont(undefined, 'normal');
@@ -55,7 +55,7 @@ const generateEmployerReceipt = (employee, masked) => {
   // Payment Details
   doc.setFont(undefined, 'bold');
   doc.setFontSize(12);
-  doc.text('Employer Share Details', 20, 102);
+  doc.text('Contribution Totals', 20, 102);
   
   // Table Headers
   doc.setFont(undefined, 'bold');
@@ -65,10 +65,10 @@ const generateEmployerReceipt = (employee, masked) => {
   
   // Table content
   doc.setFont(undefined, 'normal');
-  doc.text('Employee Share (EE)', 20, 125);
+  doc.text('Employee Total (EE)', 20, 125);
   doc.text(masked ? maskedText : formatPeso(getEeShare(employee)), pageWidth - 40, 125, { align: 'right' });
   
-  doc.text('Employer Share (ER)', 20, 135);
+  doc.text('Employer Total (ER)', 20, 135);
   doc.text(masked ? maskedText : formatPeso(getErShare(employee)), pageWidth - 40, 135, { align: 'right' });
   
   // Divider
@@ -78,13 +78,13 @@ const generateEmployerReceipt = (employee, masked) => {
   // Total
   doc.setFont(undefined, 'bold');
   doc.setFontSize(11);
-  doc.text('Total Employer Share', 20, 152);
+  doc.text('Total ER Share', 20, 152);
   doc.text(masked ? maskedText : formatPeso(getErShare(employee)), pageWidth - 40, 152, { align: 'right' });
   
   // Footer
   doc.setFontSize(9);
   doc.setFont(undefined, 'normal');
-  doc.text('This receipt is for employer contribution records.', pageWidth / 2, pageHeight - 20, { align: 'center' });
+  doc.text('This receipt is for contribution records.', pageWidth / 2, pageHeight - 20, { align: 'center' });
   
   // Open in new window and print
   const pdfUrl = doc.output('bloburi');
@@ -100,7 +100,7 @@ const maskText = (value) => {
 const maskNumber = () => '***';
 
 // Employee Table Component
-const EmployeeTable = ({ employees, loading, isViewer, onSelect }) => {
+const EmployeeTable = ({ employees, loading, isViewer, onSelect, onHistory }) => {
   if (loading) {
     return <div className="text-center py-8 text-gray-500 dark:text-gray-300">Loading employee data...</div>;
   }
@@ -115,9 +115,10 @@ const EmployeeTable = ({ employees, loading, isViewer, onSelect }) => {
         <thead>
           <tr className="border-b-2 border-[#e6a891] bg-gray-100 dark:bg-gray-800 dark:border-gray-700">
             <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Name</th>
-            <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">EE Share (Employee)</th>
-            <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">ER Share (Employer)</th>
+            <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">EE Total</th>
+            <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">ER Total</th>
             <th className="px-4 py-3 text-left font-bold text-gray-700 dark:text-gray-200">Total Payments</th>
+            <th className="px-4 py-3 text-center font-bold text-gray-700 dark:text-gray-200">History</th>
             <th className="px-4 py-3 text-center font-bold text-gray-700 dark:text-gray-200">Action</th>
           </tr>
         </thead>
@@ -142,6 +143,16 @@ const EmployeeTable = ({ employees, loading, isViewer, onSelect }) => {
               <td className="px-4 py-3 font-bold text-[#dc2626]">{isViewer ? '***' : formatPeso(getEeShare(emp) + getErShare(emp))}</td>
               <td className="px-4 py-3 text-center">
                 <button
+                  type="button"
+                  onClick={() => onHistory?.(emp)}
+                  className="bg-[#0ea5e9] hover:bg-[#0284c7] text-white px-3 py-1 rounded font-semibold transition-colors text-xs"
+                >
+                  <i className="bi bi-clock-history mr-1" aria-hidden="true" />
+                  History
+                </button>
+              </td>
+              <td className="px-4 py-3 text-center">
+                <button
                   onClick={() => generateEmployerReceipt(emp, isViewer)}
                   disabled={isViewer}
                   title={isViewer ? 'You are in viewing mode' : undefined}
@@ -162,8 +173,13 @@ const EmployeeTable = ({ employees, loading, isViewer, onSelect }) => {
 export default function Dashboard() {
   const { user } = useAuth();
   const isViewer = user?.role === 'viewer';
-  const { employees, loading } = useEmployees();
+  const { employees, loading, valuesLoading, fetchEmployeeValues } = useEmployees();
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [valuesHistory, setValuesHistory] = useState([]);
+  const [valuesError, setValuesError] = useState(null);
+  const [valuesOffset, setValuesOffset] = useState(0);
+  const [valuesHasMore, setValuesHasMore] = useState(false);
+  const valuesPageSize = 10;
 
   const totals = useMemo(() => {
     if (!employees || employees.length === 0) {
@@ -178,6 +194,57 @@ export default function Dashboard() {
       erShare: employees.reduce((sum, emp) => sum + getErShare(emp), 0),
     };
   }, [employees]);
+
+  useEffect(() => {
+    let active = true;
+    if (!selectedEmployee) {
+      setValuesHistory([]);
+      setValuesError(null);
+      setValuesOffset(0);
+      setValuesHasMore(false);
+      return () => {};
+    }
+
+    const loadValues = async () => {
+      const result = await fetchEmployeeValues(selectedEmployee, {
+        limit: valuesPageSize,
+        offset: 0,
+      });
+      if (!active) return;
+      if (!result.success) {
+        setValuesError(result.error || 'Failed to load values.');
+        setValuesHistory([]);
+        setValuesHasMore(false);
+        return;
+      }
+      setValuesError(null);
+      const rows = result.data || [];
+      setValuesHistory(rows);
+      setValuesHasMore(rows.length === valuesPageSize);
+    };
+
+    loadValues();
+    return () => {
+      active = false;
+    };
+  }, [selectedEmployee, fetchEmployeeValues]);
+
+  const handleLoadMoreValues = async () => {
+    if (!selectedEmployee) return;
+    const nextOffset = valuesOffset + valuesPageSize;
+    const result = await fetchEmployeeValues(selectedEmployee, {
+      limit: valuesPageSize,
+      offset: nextOffset,
+    });
+    if (!result.success) {
+      setValuesError(result.error || 'Failed to load values.');
+      return;
+    }
+    const rows = result.data || [];
+    setValuesHistory((prev) => [...prev, ...rows]);
+    setValuesOffset(nextOffset);
+    setValuesHasMore(rows.length === valuesPageSize);
+  };
 
   return (
     <>
@@ -209,6 +276,7 @@ export default function Dashboard() {
             loading={loading}
             isViewer={isViewer}
             onSelect={(emp) => setSelectedEmployee(emp)}
+            onHistory={(emp) => setSelectedEmployee(emp)}
           />
         </div>
       </section>
@@ -238,6 +306,52 @@ export default function Dashboard() {
                 maskText={maskText}
                 maskNumber={maskNumber}
               />
+
+              <div className="mt-6">
+                <h4 className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-2">Values History</h4>
+                {valuesLoading && (
+                  <p className="text-xs text-gray-500 dark:text-gray-300">Loading values...</p>
+                )}
+                {valuesError && (
+                  <p className="text-xs text-red-600 dark:text-red-300">{valuesError}</p>
+                )}
+                {!valuesLoading && !valuesError && valuesHistory.length === 0 && (
+                  <p className="text-xs text-gray-500 dark:text-gray-300">No values history yet.</p>
+                )}
+                {!valuesLoading && valuesHistory.length > 0 && (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="text-left text-gray-500 dark:text-gray-300">
+                          <th className="py-2">Date</th>
+                          <th className="py-2">EE Total</th>
+                          <th className="py-2">ER Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {valuesHistory.map((row) => (
+                          <tr key={row.id} className="border-t border-gray-200 dark:border-gray-700">
+                            <td className="py-2">{row.effective_date || '-'}</td>
+                            <td className="py-2">{isViewer ? '***' : formatPeso(row.ee_total)}</td>
+                            <td className="py-2">{isViewer ? '***' : formatPeso(row.er_total)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                {!valuesLoading && valuesHasMore && (
+                  <div className="mt-3">
+                    <button
+                      type="button"
+                      onClick={handleLoadMoreValues}
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-200"
+                    >
+                      Load more
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
