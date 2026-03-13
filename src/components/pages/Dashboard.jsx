@@ -126,17 +126,7 @@ const EmployeeTable = ({ employees, loading, isViewer, onSelect, onHistory }) =>
           {employees.map((emp) => (
             <tr key={emp.id} className="border-b border-gray-200 hover:bg-[#fce4ec] transition-colors dark:border-gray-700 dark:hover:bg-gray-800/60">
               <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-100">
-                {onSelect ? (
-                  <button
-                    type="button"
-                    onClick={() => onSelect(emp)}
-                    className="text-left font-semibold text-[#b45309] hover:text-[#92400e] underline decoration-dotted underline-offset-4"
-                  >
-                    {isViewer ? '***' : emp.name}
-                  </button>
-                ) : (
-                  isViewer ? '***' : emp.name
-                )}
+                {isViewer ? '***' : emp.name}
               </td>
               <td className="px-4 py-3 font-semibold text-[#10b981]">{isViewer ? '***' : formatPeso(getEeShare(emp))}</td>
               <td className="px-4 py-3 font-semibold text-[#3b82f6]">{isViewer ? '***' : formatPeso(getErShare(emp))}</td>
