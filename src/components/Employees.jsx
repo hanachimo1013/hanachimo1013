@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { useEmployees } from '../hooks/useEmployees';
+import { useEmployees } from '../../hooks/useEmployees';
 import EmployeeCard from './EmployeeCard';
 import EmployeeForm from './EmployeeForm';
 import EmployeeTable from './EmployeeTable';
-import LoadingOverlay from './LoadingOverlay';
-import { useAuth } from '../context/AuthContext';
+import LoadingOverlay from '../ui/LoadingOverlay';
+import { useAuth } from '../../context/AuthContext';
 
 const maskText = (value) => {
   const text = String(value || '');

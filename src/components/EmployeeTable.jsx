@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatPeso, getEeShare, getErShare, getPhotoUrl } from '../utils/formatters';
+import { formatPeso, getEeShare, getErShare, getPhotoUrl } from '../../utils/formatters';
 
 const EmployeeTable = ({ employees, loading, onEdit, onDelete }) => {
   if (loading) {

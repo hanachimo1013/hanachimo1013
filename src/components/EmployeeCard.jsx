@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatPeso, getEeShare, getErShare, getPhotoUrl } from '../utils/formatters';
+import { formatPeso, getEeShare, getErShare, getPhotoUrl } from '../../utils/formatters';
 
 export default function EmployeeCard({ employee, onEdit, onDelete, isViewer, maskText, maskNumber }) {
   const name = isViewer ? maskText(employee.name) : employee.name;

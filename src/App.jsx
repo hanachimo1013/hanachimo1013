@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import Layout from './components/Layout';
-import Dashboard from './components/Dashboard';
-import Employees from './components/Employees';
-import Settings from './components/Settings';
-import Reports from './components/Reports';
-import NotFound from './components/NotFound';
-import Login from './components/Login';
-import ProtectedRoute from './components/ProtectedRoute';
-import PublicOnlyRoute from './components/PublicOnlyRoute';
-import HanachimoProfile from './components/HanachimoProfile';
+import Layout from './components/layout/Layout';
+import Dashboard from './components/pages/Dashboard';
+import Employees from './components/employee/Employees';
+import Settings from './components/pages/Settings';
+import Reports from './components/pages/Reports';
+import NotFound from './components/pages/NotFound';
+import Login from './components/auth/Login';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import PublicOnlyRoute from './components/auth/PublicOnlyRoute';
+import HanachimoProfile from './components/pages/HanachimoProfile';
 
 const routeTitles = {
   '/dashboard': 'Dashboard',

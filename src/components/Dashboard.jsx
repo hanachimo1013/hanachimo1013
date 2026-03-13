@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import jsPDF from 'jspdf';
-import { useEmployees } from '../hooks/useEmployees';
-import EmployeeCard from './EmployeeCard';
-import { formatPeso, getEeShare, getErShare } from '../utils/formatters';
-import LoadingOverlay from './LoadingOverlay';
-import { useAuth } from '../context/AuthContext';
+import { useEmployees } from '../../hooks/useEmployees';
+import EmployeeCard from '../employee/EmployeeCard';
+import { formatPeso, getEeShare, getErShare } from '../../utils/formatters';
+import LoadingOverlay from '../ui/LoadingOverlay';
+import { useAuth } from '../../context/AuthContext';
 
 const StatusCard = ({ title, value }) => (
   <div className="bg-[#f2dede] p-4 md:p-6 rounded shadow-md flex flex-col items-center justify-center min-h-32 md:h-40 hover:shadow-lg transition-shadow dark:bg-gray-800">
