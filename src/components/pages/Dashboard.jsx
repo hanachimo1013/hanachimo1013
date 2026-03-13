@@ -110,7 +110,7 @@ const EmployeeTable = ({ employees, loading, isViewer, onSelect, onHistory }) =>
   }
 
   return (
-    <div className="h-[60vh] md:h-[50vh] overflow-auto">
+    <div className="max-h-[calc(100vh-320px)] overflow-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b-2 border-[#e6a891] bg-gray-100 dark:bg-gray-800 dark:border-gray-700">

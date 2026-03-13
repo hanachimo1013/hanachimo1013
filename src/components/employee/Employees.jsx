@@ -211,17 +211,19 @@ export default function Employees() {
                 <p className="text-red-700 font-semibold dark:text-red-200">{error}</p>
               </div>
             )}
-            <EmployeeForm
-              onSubmit={handleFormSubmit}
-              onCancel={handleFormCancel}
-              initialData={editingEmployee}
-              isLoading={isSubmitting}
-            />
+            <div className="max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain">
+              <EmployeeForm
+                onSubmit={handleFormSubmit}
+                onCancel={handleFormCancel}
+                initialData={editingEmployee}
+                isLoading={isSubmitting}
+              />
+            </div>
           </div>
         </div>
       )}
 
-      <div className="relative h-[60vh] md:h-[50vh] overflow-auto">
+      <div className="relative max-h-[calc(100vh-320px)] overflow-auto">
         {loading && <LoadingOverlay message="Loading employees..." />}
         <EmployeeTable
           employees={displayEmployees}
