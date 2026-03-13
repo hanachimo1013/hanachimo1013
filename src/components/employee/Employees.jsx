@@ -238,7 +238,7 @@ export default function Employees() {
         </div>
       )}
 
-      <div className="relative max-h-[calc(100vh-320px)] overflow-auto">
+      <div className="relative max-h-[calc(100vh-320px)] overflow-auto touch-pan-y overscroll-contain">
         {loading && <LoadingOverlay message="Loading employees..." />}
         <EmployeeTable
           employees={displayEmployees}
