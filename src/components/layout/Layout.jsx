@@ -87,7 +87,7 @@ export default function Layout({ children }) {
         className="flex-1 w-screen overflow-hidden pt-20 md:pt-0"
         style={{ height: 'calc(100vh - 80px)' }}
       >
-        <div className={`h-full overflow-x-hidden md:grid ${sidebarVisible ? 'md:grid-cols-[18rem_minmax(0,1fr)]' : 'md:grid-cols-[4rem_minmax(0,1fr)]'}`}>
+        <div className={`h-full overflow-x-hidden md:grid transition-[grid-template-columns] duration-300 ease-in-out ${sidebarVisible ? 'md:grid-cols-[18rem_minmax(0,1fr)]' : 'md:grid-cols-[4rem_minmax(0,1fr)]'}`}>
         {/* Mobile Sidebar Overlay - Glass Effect */}
         {sidebarOpen && (
           <div
@@ -114,7 +114,7 @@ export default function Layout({ children }) {
 
         {/* Sidebar Section - Desktop */}
         {sidebarVisible ? (
-          <aside className="hidden md:flex md:sticky md:top-4 w-72 bg-[#e9dcc9] p-6 flex-col items-center shadow-lg overflow-y-auto border-r-4 border-[#bc7676] dark:bg-gray-800 dark:border-gray-700 max-h-[calc(100vh-120px)]">
+          <aside className="hidden md:flex md:sticky md:top-4 w-72 bg-[#e9dcc9] p-6 flex-col items-center shadow-lg overflow-y-auto border-r-4 border-[#bc7676] dark:bg-gray-800 dark:border-gray-700 max-h-[calc(100vh-120px)] transition-[width,padding] duration-300 ease-in-out">
             <SidebarContent
               displayName={displayName}
               displayRole={displayRole}
@@ -125,7 +125,7 @@ export default function Layout({ children }) {
             />
           </aside>
         ) : (
-          <aside className="hidden md:flex md:sticky md:top-4 w-16 bg-[#e9dcc9] p-2 flex-col items-center shadow-lg border-r-4 border-[#bc7676] dark:bg-gray-800 dark:border-gray-700 max-h-[calc(100vh-120px)]">
+          <aside className="hidden md:flex md:sticky md:top-4 w-16 bg-[#e9dcc9] p-2 flex-col items-center shadow-lg border-r-4 border-[#bc7676] dark:bg-gray-800 dark:border-gray-700 max-h-[calc(100vh-120px)] transition-[width,padding] duration-300 ease-in-out">
             <SidebarCollapsed
               isEmployee={isEmployee}
               isViewer={isViewer}
